@@ -3,43 +3,250 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Ficha D&D</title>
-    <link rel="stylesheet" href="src/css/style.css" />
+    <title>Ficha D&D 5e - Roll20 Dark</title>
+    <link rel="stylesheet" href="./src/css/style.css" />
   </head>
   <body>
-    <div id="app">
-      <header class="sheet-header">
-        <input type="text" id="char-name" placeholder="Nome do Personagem" />
-        <div class="header-stats">
-          <div class="stat-box">
-            <label>Classe & Nível</label>
-            <input type="text" id="char-class" placeholder="Ex: Guerreiro 3" />
+    <div id="app" class="sheet-wrapper">
+      <header class="sheet-topbar">
+        <div class="hero-name-container">
+          <input type="text" id="char-name" placeholder="NOME DO PERSONAGEM" />
+        </div>
+        <div class="header-meta-grid">
+          <div class="meta-item">
+            <label>Classe</label><input type="text" id="char-class" />
           </div>
-          <div class="stat-box">
-            <label>CA</label>
-            <input type="number" id="char-ac" value="10" />
+          <div class="meta-item">
+            <label>Subclasse</label><input type="text" id="char-subclass" />
           </div>
-          <div class="stat-box">
-            <label>HP Atual</label>
-            <input type="number" id="char-hp-atual" value="10" />
+          <div class="meta-item">
+            <label>Nível</label
+            ><input type="number" id="char-level" min="1" max="20" value="1" />
           </div>
-          <div class="stat-box">
-            <label>HP Máx</label>
-            <input type="number" id="char-hp-max" value="10" />
+          <div class="meta-item">
+            <label>Espécie</label><input type="text" id="char-species" />
+          </div>
+          <div class="meta-item">
+            <label>Antecedente</label><input type="text" id="char-background" />
+          </div>
+          <div class="meta-item">
+            <label>EXP</label><input type="text" id="char-xp" />
           </div>
         </div>
       </header>
 
-      <main class="sheet-body">
-        <h3>Atributos</h3>
-        <div class="attributes-grid" id="attributes-grid"></div>
-      </main>
+      <div class="sheet-body-grid">
+        <aside class="column-left">
+          <div class="panel panel-quick">
+            <div class="quick-stat">
+              <span>Bônus de Proficiência</span>
+              <input type="text" id="char-prof-bonus" value="+2" readonly />
+            </div>
+            <div class="quick-stat">
+              <span>Inspiração Heróica</span>
+              <input type="checkbox" id="char-inspiration" />
+            </div>
+          </div>
+
+          <div class="panel panel-hp">
+            <div class="panel-header">PONTOS DE VIDA</div>
+            <div class="hp-main-grid">
+              <div class="hp-box">
+                <label>Atual</label><input type="number" id="char-hp-atual" />
+              </div>
+              <span class="hp-sep">/</span>
+              <div class="hp-box">
+                <label>Máximo</label><input type="number" id="char-hp-max" />
+              </div>
+              <div class="hp-box">
+                <label>Temp.</label><input type="number" id="char-hp-temp" />
+              </div>
+            </div>
+            <div class="hp-sub-grid">
+              <div class="sub-box">
+                <label
+                  >Dados de Vida (Máx: <span id="hd-max-label">1</span>)</label
+                >
+                <div class="hd-flex">
+                  <input type="number" id="char-hd-atual" placeholder="Qtd" />
+                  <input type="text" id="char-hd-type" placeholder="d10" />
+                </div>
+              </div>
+              <div class="sub-box">
+                <label>Testes de Morte</label>
+                <div class="death-saves-row">
+                  <span>S</span><input type="checkbox" /><input
+                    type="checkbox"
+                  /><input type="checkbox" /> <span>F</span
+                  ><input type="checkbox" /><input type="checkbox" /><input
+                    type="checkbox"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel panel-skills">
+            <div class="panel-header">PERÍCIAS</div>
+            <div class="skills-table-header">
+              <span>PROF</span><span>PERÍCIA</span><span>EXTRA</span
+              ><span>TOTAL</span>
+            </div>
+            <div id="skills-list" class="skills-list"></div>
+          </div>
+        </aside>
+
+        <main class="column-center">
+          <nav class="tabs-nav">
+            <button class="tab-btn active" data-target="tab-combat">
+              COMBATE
+            </button>
+            <button class="tab-btn" data-target="tab-spells">MAGIAS</button>
+            <button class="tab-btn" data-target="tab-inventory">
+              INVENTÁRIO
+            </button>
+            <button class="tab-btn" data-target="tab-features">TRAÇOS</button>
+            <button class="tab-btn" data-target="tab-notes">NOTAS</button>
+            <button class="tab-btn" data-target="tab-about">SOBRE</button>
+          </nav>
+
+          <div id="tab-combat" class="tab-content active">
+            <div class="panel">
+              <div class="panel-header">ATRIBUTOS</div>
+              <div id="attributes-grid" class="attributes-grid"></div>
+            </div>
+
+            <div class="panel">
+              <div class="panel-header">TESTES DE SALVAGUARDA</div>
+              <div id="saves-grid" class="saves-grid"></div>
+            </div>
+
+            <div class="panel">
+              <div class="panel-header">ATAQUES & CONJURAÇÃO</div>
+              <div class="table-responsive">
+                <table class="dnd-table">
+                  <thead>
+                    <tr>
+                      <th>Nome</th>
+                      <th>Bônus</th>
+                      <th>Dano / Tipo</th>
+                      <th>Alcance</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><input type="text" placeholder="Espada Longa" /></td>
+                      <td><input type="text" placeholder="+5" /></td>
+                      <td>
+                        <input type="text" placeholder="1d8+3 cortante" />
+                      </td>
+                      <td><input type="text" placeholder="1.5m" /></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div id="tab-spells" class="tab-content">
+            <div class="panel">
+              <div class="panel-header">CONJURAÇÃO</div>
+              <p class="placeholder-txt">
+                Painel de magias pronto para expansão.
+              </p>
+            </div>
+          </div>
+          <div id="tab-inventory" class="tab-content">
+            <div class="panel">
+              <div class="panel-header">INVENTÁRIO</div>
+              <p class="placeholder-txt">Painel de equipamentos e moedas.</p>
+            </div>
+          </div>
+          <div id="tab-features" class="tab-content">
+            <div class="panel">
+              <div class="panel-header">TRAÇOS & TALENTOS</div>
+              <p class="placeholder-txt">Painel de habilidades de classe.</p>
+            </div>
+          </div>
+          <div id="tab-notes" class="tab-content">
+            <div class="panel">
+              <div class="panel-header">ANOTAÇÕES DA CAMPANHA</div>
+              <textarea
+                rows="12"
+                class="full-area"
+                placeholder="Escreva aqui..."
+              ></textarea>
+            </div>
+          </div>
+          <div id="tab-about" class="tab-content">
+            <div class="panel">
+              <div class="panel-header">HISTÓRIA DO PERSONAGEM</div>
+              <textarea
+                rows="12"
+                class="full-area"
+                placeholder="Aparência, passado e aliados..."
+              ></textarea>
+            </div>
+          </div>
+        </main>
+
+        <aside class="column-right">
+          <div class="shields-grid">
+            <div class="shield-gold">
+              <input type="number" id="char-ac" value="10" />
+              <label>CA</label>
+            </div>
+            <div class="shield-dark">
+              <span id="char-init-val" class="shield-big-num">+0</span>
+              <label>Iniciativa</label>
+              <div class="mini-input-box">
+                <span>Extra:</span>
+                <input type="number" id="char-init-outro" value="0" />
+              </div>
+            </div>
+            <div class="shield-dark">
+              <input type="text" id="char-speed" value="9m" />
+              <label>Desloc.</label>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-header">DEFESAS</div>
+            <div class="defenses-group">
+              <div><label>Resistências</label><input type="text" /></div>
+              <div><label>Imunidades</label><input type="text" /></div>
+              <div><label>Vulnerabilidades</label><input type="text" /></div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-header">SENTIDOS & PROFICIÊNCIAS</div>
+            <div class="defenses-group">
+              <div>
+                <label>Percepção Passiva</label
+                ><input type="number" value="10" />
+              </div>
+              <div>
+                <label>Idiomas</label
+                ><textarea rows="3" placeholder="Comum, Élfico..."></textarea>
+              </div>
+              <div>
+                <label>Armas & Armaduras</label
+                ><textarea
+                  rows="3"
+                  placeholder="Simples, Marciais..."
+                ></textarea>
+              </div>
+            </div>
+          </div>
+        </aside>
+      </div>
 
       <footer class="sheet-footer">
-        <button id="save-btn">Salvar Ficha</button>
         <span id="status-msg"></span>
+        <button id="save-btn" style="display: none">Salvar</button>
       </footer>
     </div>
-    <script type="module" src="src/js/main.js"></script>
+    <script type="module" src="/src/js/main.js"></script>
   </body>
 </html>
