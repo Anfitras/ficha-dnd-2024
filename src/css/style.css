@@ -273,7 +273,7 @@ body {
   gap: 0.2rem;
   border-bottom: 2px solid var(--border-color);
   margin-bottom: 1.2rem;
-  overflow-x: auto;
+  overflow: hidden;
 }
 
 .tab-btn {
