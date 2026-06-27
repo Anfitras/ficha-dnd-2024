@@ -7,6 +7,28 @@
     <link rel="stylesheet" href="./src/css/style.css" />
   </head>
   <body>
+    <div id="home-hub" class="home-container">
+      <div class="home-hero">
+        <h1 class="home-title">A Maldição de Strahd</h1>
+        <p class="home-subtitle">Selecione a sua ficha</p>
+      </div>
+      <div class="players-grid" id="players-grid"></div>
+    </div>
+
+    <div id="pin-modal" class="pin-overlay">
+      <div class="pin-box">
+        <span class="pin-icon">🔒</span>
+        <h2 id="pin-target-name">GRIMÓRIO SELADO</h2>
+        <input
+          type="password"
+          id="pin-input"
+          maxlength="4"
+          placeholder="••••"
+        />
+        <button id="pin-submit">DESTRAVAR</button>
+        <span id="pin-error"></span>
+      </div>
+    </div>
     <div id="app" class="sheet-wrapper">
       <header class="sheet-topbar">
         <div class="hero-name-container">
@@ -50,37 +72,60 @@
 
           <div class="panel panel-hp">
             <div class="panel-header">PONTOS DE VIDA</div>
+
             <div class="hp-main-grid">
-              <div class="hp-box">
-                <label>Atual</label><input type="number" id="char-hp-atual" />
-              </div>
-              <span class="hp-sep">/</span>
-              <div class="hp-box">
-                <label>Máximo</label><input type="number" id="char-hp-max" />
-              </div>
-              <div class="hp-box">
-                <label>Temp.</label><input type="number" id="char-hp-temp" />
-              </div>
-            </div>
-            <div class="hp-sub-grid">
-              <div class="sub-box">
-                <label
-                  >Dados de Vida (Máx: <span id="hd-max-label">1</span>)</label
-                >
-                <div class="hd-flex">
-                  <input type="number" id="char-hd-atual" placeholder="Qtd" />
-                  <input type="text" id="char-hd-type" placeholder="d10" />
+              <div class="hp-card-composite">
+                <div class="hp-values-row">
+                  <input type="number" id="char-hp-atual" />
+                  <span class="hp-slash">/</span>
+                  <input type="number" id="char-hp-max" />
+                </div>
+                <div class="hp-bar-track">
+                  <div id="hp-bar-fill" class="hp-bar-fill"></div>
+                </div>
+                <div class="hp-labels-row">
+                  <span>Atual</span>
+                  <span>Máximo</span>
                 </div>
               </div>
+
+              <div class="hp-card-temp">
+                <input type="number" id="char-hp-temp" />
+                <label>Temp.</label>
+              </div>
+            </div>
+
+            <div class="hp-sub-grid">
+              <div class="sub-box">
+                <label>Dados de Vida</label>
+                <div class="hd-widget">
+                  <div class="hd-type-side">
+                    <input type="text" id="char-hd-type" placeholder="d8" />
+                    <span id="hd-class-mirror"></span>
+                  </div>
+                  <div class="hd-count-side">
+                    <input type="number" id="char-hd-atual" placeholder="1" />
+                    <span>/</span>
+                    <span id="hd-max-label">1</span>
+                  </div>
+                </div>
+              </div>
+
               <div class="sub-box">
                 <label>Testes de Morte</label>
-                <div class="death-saves-row">
-                  <span>S</span><input type="checkbox" /><input
-                    type="checkbox"
-                  /><input type="checkbox" /> <span>F</span
-                  ><input type="checkbox" /><input type="checkbox" /><input
-                    type="checkbox"
-                  />
+                <div class="death-saves-stack">
+                  <div class="death-row">
+                    <span>S</span>
+                    <input type="checkbox" id="death-s-1" />
+                    <input type="checkbox" id="death-s-2" />
+                    <input type="checkbox" id="death-s-3" />
+                  </div>
+                  <div class="death-row">
+                    <span>F</span>
+                    <input type="checkbox" id="death-f-1" />
+                    <input type="checkbox" id="death-f-2" />
+                    <input type="checkbox" id="death-f-3" />
+                  </div>
                 </div>
               </div>
             </div>
@@ -88,10 +133,7 @@
 
           <div class="panel panel-skills">
             <div class="panel-header">PERÍCIAS</div>
-            <div class="skills-table-header">
-              <span>PROF</span><span>PERÍCIA</span><span>EXTRA</span
-              ><span>TOTAL</span>
-            </div>
+            <div class="skills-table-header"></div>
             <div id="skills-list" class="skills-list"></div>
           </div>
         </aside>
@@ -131,19 +173,23 @@
                       <th>Bônus</th>
                       <th>Dano / Tipo</th>
                       <th>Alcance</th>
+                      <th style="width: 30px"></th>
                     </tr>
                   </thead>
-                  <tbody>
-                    <tr>
-                      <td><input type="text" placeholder="Espada Longa" /></td>
-                      <td><input type="text" placeholder="+5" /></td>
-                      <td>
-                        <input type="text" placeholder="1d8+3 cortante" />
-                      </td>
-                      <td><input type="text" placeholder="1.5m" /></td>
-                    </tr>
-                  </tbody>
+                  <tbody id="attacks-list"></tbody>
                 </table>
+                <button
+                  type="button"
+                  id="add-attack-btn"
+                  class="tab-btn"
+                  style="
+                    width: 100%;
+                    margin-top: 8px;
+                    border: 1px dashed var(--border-color);
+                  "
+                >
+                  + ADICIONAR ATAQUE
+                </button>
               </div>
             </div>
           </div>
@@ -172,6 +218,7 @@
             <div class="panel">
               <div class="panel-header">ANOTAÇÕES DA CAMPANHA</div>
               <textarea
+                id="char-notes"
                 rows="12"
                 class="full-area"
                 placeholder="Escreva aqui..."
@@ -182,6 +229,7 @@
             <div class="panel">
               <div class="panel-header">HISTÓRIA DO PERSONAGEM</div>
               <textarea
+                id="char-about"
                 rows="12"
                 class="full-area"
                 placeholder="Aparência, passado e aliados..."
@@ -199,10 +247,6 @@
             <div class="shield-dark">
               <span id="char-init-val" class="shield-big-num">+0</span>
               <label>Iniciativa</label>
-              <div class="mini-input-box">
-                <span>Extra:</span>
-                <input type="number" id="char-init-outro" value="0" />
-              </div>
             </div>
             <div class="shield-dark">
               <input type="text" id="char-speed" value="9m" />
@@ -213,29 +257,88 @@
           <div class="panel">
             <div class="panel-header">DEFESAS</div>
             <div class="defenses-group">
-              <div><label>Resistências</label><input type="text" /></div>
-              <div><label>Imunidades</label><input type="text" /></div>
-              <div><label>Vulnerabilidades</label><input type="text" /></div>
+              <div>
+                <label>Resistências</label>
+                <div class="tag-input-box" data-target="def-res">
+                  <div id="list-def-res" class="tags-flex"></div>
+                  <input
+                    type="text"
+                    placeholder="+ Adicionar"
+                    class="tag-adder"
+                  />
+                </div>
+              </div>
+              <div>
+                <label>Imunidades</label>
+                <div class="tag-input-box" data-target="def-imun">
+                  <div id="list-def-imun" class="tags-flex"></div>
+                  <input
+                    type="text"
+                    placeholder="+ Adicionar"
+                    class="tag-adder"
+                  />
+                </div>
+              </div>
+              <div>
+                <label>Vulnerabilidades</label>
+                <div class="tag-input-box" data-target="def-vuln">
+                  <div id="list-def-vuln" class="tags-flex"></div>
+                  <input
+                    type="text"
+                    placeholder="+ Adicionar"
+                    class="tag-adder"
+                  />
+                </div>
+              </div>
             </div>
           </div>
 
           <div class="panel">
-            <div class="panel-header">SENTIDOS & PROFICIÊNCIAS</div>
+            <div class="panel-header">PROFICIÊNCIAS & IDIOMAS</div>
             <div class="defenses-group">
               <div>
-                <label>Percepção Passiva</label
-                ><input type="number" value="10" />
+                <label>Armas</label>
+                <div class="tag-input-box" data-target="prof-armas">
+                  <div id="list-prof-armas" class="tags-flex"></div>
+                  <input
+                    type="text"
+                    placeholder="+ Adicionar"
+                    class="tag-adder"
+                  />
+                </div>
               </div>
               <div>
-                <label>Idiomas</label
-                ><textarea rows="3" placeholder="Comum, Élfico..."></textarea>
+                <label>Armaduras</label>
+                <div class="tag-input-box" data-target="prof-armaduras">
+                  <div id="list-prof-armaduras" class="tags-flex"></div>
+                  <input
+                    type="text"
+                    placeholder="+ Adicionar"
+                    class="tag-adder"
+                  />
+                </div>
               </div>
               <div>
-                <label>Armas & Armaduras</label
-                ><textarea
-                  rows="3"
-                  placeholder="Simples, Marciais..."
-                ></textarea>
+                <label>Ferramentas</label>
+                <div class="tag-input-box" data-target="prof-ferramentas">
+                  <div id="list-prof-ferramentas" class="tags-flex"></div>
+                  <input
+                    type="text"
+                    placeholder="+ Adicionar"
+                    class="tag-adder"
+                  />
+                </div>
+              </div>
+              <div>
+                <label>Idiomas</label>
+                <div class="tag-input-box" data-target="prof-idiomas">
+                  <div id="list-prof-idiomas" class="tags-flex"></div>
+                  <input
+                    type="text"
+                    placeholder="+ Adicionar"
+                    class="tag-adder"
+                  />
+                </div>
               </div>
             </div>
           </div>
