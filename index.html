@@ -29,6 +29,119 @@
         <span id="pin-error"></span>
       </div>
     </div>
+    <div id="mastery-modal">
+      <div class="mastery-box">
+        <div class="mastery-header">
+          <h2 id="mastery-title">MAESTRIA</h2>
+          <span id="mastery-close" class="tag-remove">×</span>
+        </div>
+        <p id="mastery-desc"></p>
+      </div>
+    </div>
+    <div id="attack-modal" class="pin-overlay">
+      <div class="attack-box">
+        <div class="mastery-header">
+          <h2 id="attack-modal-title">CONFIGURAR ATAQUE</h2>
+          <span id="attack-modal-close" class="tag-remove">×</span>
+        </div>
+        <div class="attack-form-grid">
+          <div class="form-group full-width">
+            <label>Nome da Arma</label>
+            <input
+              type="text"
+              id="atk-inp-nome"
+              placeholder="ex: Espada Longa"
+            />
+          </div>
+          <div class="form-group">
+            <label>Atributo</label>
+            <select id="atk-inp-atributo">
+              <option value="">—</option>
+              <option value="forca">Força</option>
+              <option value="destreza">Destreza</option>
+              <option value="constituicao">Constituição</option>
+              <option value="inteligencia">Inteligência</option>
+              <option value="sabedoria">Sabedoria</option>
+              <option value="carisma">Carisma</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Proficiência</label>
+            <select id="atk-inp-proficiencia">
+              <option value="0">Não proficiente</option>
+              <option value="0.5">Meio proficiente</option>
+              <option value="1">Proficiente</option>
+              <option value="2">Especialista</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Bônus Adicional</label>
+            <input
+              type="text"
+              id="atk-inp-bonus-extra"
+              placeholder="+2"
+              inputmode="numeric"
+            />
+          </div>
+          <div class="form-group">
+            <label>Bônus Total</label>
+            <input type="text" id="atk-inp-bonus-total" readonly />
+          </div>
+          <div class="form-group">
+            <label>Rolagem de Dano</label>
+            <input type="text" id="atk-inp-dano-roll" placeholder="2d6+3" />
+          </div>
+          <div class="form-group">
+            <label>Tipo de Dano</label>
+            <select id="atk-inp-dano-tipo">
+              <option value="">—</option>
+              <option value="Ácido">Ácido</option>
+              <option value="Contundente">Contundente</option>
+              <option value="Cortante">Cortante</option>
+              <option value="Elétrico">Elétrico</option>
+              <option value="Energético">Energético</option>
+              <option value="Gélido">Gélido</option>
+              <option value="Ígneo">Ígneo</option>
+              <option value="Necrótico">Necrótico</option>
+              <option value="Perfurante">Perfurante</option>
+              <option value="Psíquico">Psíquico</option>
+              <option value="Radiante">Radiante</option>
+              <option value="Trovejante">Trovejante</option>
+              <option value="Venenoso">Venenoso</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Alcance</label>
+            <input type="text" id="atk-inp-alcance" placeholder="1,5m" />
+          </div>
+          <div class="form-group">
+            <label>Maestria</label>
+            <select id="atk-inp-maestria">
+              <option value="">—</option>
+              <option value="Afligir">Afligir</option>
+              <option value="Ágil">Ágil</option>
+              <option value="Derrubar">Derrubar</option>
+              <option value="Drenar">Drenar</option>
+              <option value="Empurrar">Empurrar</option>
+              <option value="Garantido">Garantido</option>
+              <option value="Lentidão">Lentidão</option>
+              <option value="Trespassar">Trespassar</option>
+            </select>
+          </div>
+          <div class="form-group full-width">
+            <label>Descrição / Efeito</label>
+            <textarea
+              id="atk-inp-desc"
+              rows="3"
+              placeholder="Propriedades mágicas, notas extras..."
+            ></textarea>
+          </div>
+        </div>
+        <button type="button" id="atk-btn-save" class="btn-primary-gold">
+          CONCLUÍDO
+        </button>
+      </div>
+    </div>
     <div id="app" class="sheet-wrapper">
       <header class="sheet-topbar">
         <div class="hero-name-container">
@@ -170,9 +283,10 @@
                   <thead>
                     <tr>
                       <th>Nome</th>
-                      <th>Bônus</th>
+                      <th>Bônus Total</th>
                       <th>Dano / Tipo</th>
                       <th>Alcance</th>
+                      <th>Maestria</th>
                       <th style="width: 30px"></th>
                     </tr>
                   </thead>
@@ -181,12 +295,7 @@
                 <button
                   type="button"
                   id="add-attack-btn"
-                  class="tab-btn"
-                  style="
-                    width: 100%;
-                    margin-top: 8px;
-                    border: 1px dashed var(--border-color);
-                  "
+                  class="add-action-btn"
                 >
                   + ADICIONAR ATAQUE
                 </button>

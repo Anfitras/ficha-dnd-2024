@@ -929,3 +929,198 @@ input[type="checkbox"]:checked::before {
   outline: none;
   color: #fff !important;
 }
+
+.mastery-cell {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.mastery-cell select {
+  flex: 1;
+  background: var(--bg-input);
+  border: 1px solid var(--border-color);
+  color: #fff;
+  padding: 0.55rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+}
+
+.eye-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  border-radius: 0;
+  padding: 0.15rem 0.25rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  transition: all 0.2s;
+}
+
+.eye-btn:hover {
+  color: var(--gold-bright);
+  background: transparent;
+}
+
+#mastery-modal {
+  display: none;
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  z-index: 999;
+  width: 100%;
+  max-width: 360px;
+}
+
+.mastery-box {
+  background: var(--bg-card);
+  border: 1px solid var(--gold-primary);
+  border-radius: 8px;
+  padding: 1.2rem;
+  width: 100%;
+  box-shadow:
+    0 4px 25px rgba(0, 0, 0, 0.75),
+    0 0 20px rgba(163, 18, 38, 0.2);
+}
+
+.mastery-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 0.5rem;
+  margin-bottom: 0.8rem;
+}
+
+.mastery-header h2 {
+  font-size: 0.8rem;
+  color: var(--gold-primary);
+  letter-spacing: 1px;
+  font-weight: 900;
+}
+
+#mastery-desc {
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: var(--text-main);
+}
+
+.add-action-btn {
+  width: 100%;
+  margin-top: 8px;
+  background: transparent;
+  color: var(--text-muted);
+  padding: 0.8rem;
+  font-size: 0.85rem;
+  font-weight: 800;
+  cursor: pointer;
+  border: 1px dashed var(--border-color);
+  border-radius: 6px;
+  transition: all 0.2s;
+}
+
+.add-action-btn:hover {
+  color: var(--gold-bright);
+  border-color: var(--gold-primary);
+}
+
+.read-only-cell {
+  font-size: 0.95rem;
+  color: var(--text-main);
+  font-weight: 600;
+  padding: 0.7rem 0.4rem !important;
+}
+
+.mastery-badge {
+  font-size: 0.82rem;
+  font-weight: bold;
+  color: #fff;
+}
+
+.action-icon {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 0.95rem;
+  padding: 0 6px;
+  transition: transform 0.15s;
+}
+
+.action-icon:hover {
+  transform: scale(1.25);
+}
+
+.attack-box {
+  background: var(--bg-card);
+  border: 2px solid var(--gold-primary);
+  border-radius: 12px;
+  padding: 1.8rem;
+  width: 90%;
+  max-width: 520px;
+  box-shadow: 0 0 45px rgba(163, 18, 38, 0.45);
+}
+
+.attack-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  align-items: start;
+}
+
+.full-width {
+  grid-column: span 2;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.form-group label {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  background: var(--bg-input);
+  border: 1px solid var(--border-color);
+  color: #fff;
+  padding: 0.65rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+}
+
+.form-group input[readonly] {
+  color: var(--gold-bright);
+  border-color: var(--gold-primary);
+  background: rgba(163, 18, 38, 0.12);
+  font-weight: 800;
+}
+
+.btn-primary-gold {
+  width: 100%;
+  background: var(--gold-primary);
+  color: #fff;
+  font-weight: 900;
+  padding: 0.8rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  letter-spacing: 1px;
+  transition: background 0.2s;
+}
+
+.btn-primary-gold:hover {
+  background: var(--gold-bright);
+}
