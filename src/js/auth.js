@@ -21,7 +21,7 @@ export function iniciarAuth() {
         const link = document.createElement("a");
         link.className = "player-card";
         link.href = `/?char=${p.id}`;
-        link.innerHTML = `<h3>${p.nome}</h3><span>Acessar Grimório</span>`;
+        link.innerHTML = `<h3>${p.nome}</h3><span>Acessar Ficha</span>`;
         gridPlayers.appendChild(link);
       });
     }
