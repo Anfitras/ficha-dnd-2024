@@ -113,7 +113,7 @@ export function montarEstruturaEstatica() {
   const headerSkills = document.querySelector(".skills-table-header");
 
   if (headerSkills) {
-    headerSkills.innerHTML = `<span>PERÍCIA</span><span>ATR</span><span>TOTAL</span><span>PROF</span>`;
+    headerSkills.innerHTML = `<span>PERÍCIA</span><span></span><span>TOTAL</span><span>PROF</span>`;
   }
 
   atributosLista.forEach((attr) => {
