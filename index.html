@@ -33,7 +33,13 @@
       <div class="mastery-box">
         <div class="mastery-header">
           <h2 id="mastery-title">MAESTRIA</h2>
-          <span id="mastery-close" class="tag-remove">×</span>
+          <span
+            id="mastery-close"
+            class="tag-remove"
+            role="button"
+            aria-label="Fechar janela de maestria"
+            >×</span
+          >
         </div>
         <p id="mastery-desc"></p>
       </div>
@@ -42,7 +48,13 @@
       <div class="attack-box">
         <div class="mastery-header">
           <h2 id="attack-modal-title">CONFIGURAR ATAQUE</h2>
-          <span id="attack-modal-close" class="tag-remove">×</span>
+          <span
+            id="attack-modal-close"
+            class="tag-remove"
+            role="button"
+            aria-label="Fechar janela de ataque"
+            >×</span
+          >
         </div>
         <div class="attack-form-grid">
           <div class="form-group full-width">
@@ -93,22 +105,7 @@
           </div>
           <div class="form-group">
             <label>Tipo de Dano</label>
-            <select id="atk-inp-dano-tipo">
-              <option value="">—</option>
-              <option value="Ácido">Ácido</option>
-              <option value="Contundente">Contundente</option>
-              <option value="Cortante">Cortante</option>
-              <option value="Elétrico">Elétrico</option>
-              <option value="Energético">Energético</option>
-              <option value="Gélido">Gélido</option>
-              <option value="Ígneo">Ígneo</option>
-              <option value="Necrótico">Necrótico</option>
-              <option value="Perfurante">Perfurante</option>
-              <option value="Psíquico">Psíquico</option>
-              <option value="Radiante">Radiante</option>
-              <option value="Trovejante">Trovejante</option>
-              <option value="Venenoso">Venenoso</option>
-            </select>
+            <select id="atk-inp-dano-tipo"></select>
           </div>
           <div class="form-group">
             <label>Alcance</label>
@@ -116,17 +113,7 @@
           </div>
           <div class="form-group">
             <label>Maestria</label>
-            <select id="atk-inp-maestria">
-              <option value="">—</option>
-              <option value="Afligir">Afligir</option>
-              <option value="Ágil">Ágil</option>
-              <option value="Derrubar">Derrubar</option>
-              <option value="Drenar">Drenar</option>
-              <option value="Empurrar">Empurrar</option>
-              <option value="Garantido">Garantido</option>
-              <option value="Lentidão">Lentidão</option>
-              <option value="Trespassar">Trespassar</option>
-            </select>
+            <select id="atk-inp-maestria"></select>
           </div>
           <div class="form-group full-width">
             <label>Descrição / Efeito</label>
@@ -456,7 +443,6 @@
 
       <footer class="sheet-footer">
         <span id="status-msg"></span>
-        <button id="save-btn" style="display: none">Salvar</button>
       </footer>
     </div>
     <script type="module" src="/src/js/main.js"></script>

@@ -32,9 +32,9 @@ if (isMesaValida) {
         const status = document.getElementById("status-msg");
         if (status) {
           status.style.color = "#00aaff";
-          status.innerText = "Mesa Sincronizada";
+          status.textContent = "Mesa Sincronizada";
           setTimeout(() => {
-            status.innerText = "";
+            status.textContent = "";
           }, 1500);
         }
       },

@@ -36,7 +36,6 @@ input[type="number"] {
   -moz-appearance: textfield;
 }
 
-/* OVERHAUL DARK FANTASY: Checkboxes Nativos */
 input[type="checkbox"] {
   appearance: none;
   -webkit-appearance: none;
@@ -84,6 +83,10 @@ input[type="checkbox"]:checked::before {
   border-radius: 8px;
   padding: 1.2rem 1.5rem;
   margin-bottom: 1.5rem;
+  width: 100%;
+}
+
+.hero-name-container {
   width: 100%;
 }
 
@@ -137,6 +140,15 @@ input[type="checkbox"]:checked::before {
   align-items: start;
 }
 
+.column-left,
+.column-center,
+.column-right {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-width: 0;
+}
+
 @media (max-width: 1024px) {
   .sheet-body-grid {
     grid-template-columns: 1fr;
@@ -152,6 +164,11 @@ input[type="checkbox"]:checked::before {
   border-radius: 8px;
   padding: 1.2rem;
   margin-bottom: 1.2rem;
+}
+
+.panel-hp,
+.panel-skills {
+  width: 100%;
 }
 
 .panel-header {
@@ -387,7 +404,6 @@ input[type="checkbox"]:checked::before {
   border-radius: 3px;
 }
 
-/* PAINEL DE PERÍCIAS ESTILO D&D BEYOND */
 .skills-table-header,
 .skill-row {
   display: grid;
@@ -596,6 +612,12 @@ input[type="checkbox"]:checked::before {
   border-radius: 6px;
   font-size: 0.85rem;
   font-weight: bold;
+}
+
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .dnd-table {
@@ -934,16 +956,6 @@ input[type="checkbox"]:checked::before {
   display: flex;
   align-items: center;
   gap: 4px;
-}
-
-.mastery-cell select {
-  flex: 1;
-  background: var(--bg-input);
-  border: 1px solid var(--border-color);
-  color: #fff;
-  padding: 0.55rem;
-  border-radius: 4px;
-  font-size: 0.85rem;
 }
 
 .eye-btn {

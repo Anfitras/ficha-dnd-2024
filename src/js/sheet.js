@@ -78,6 +78,22 @@ const maestriasDescricoes = {
     "Se atingir uma criatura com uma jogada de ataque corpo a corpo usando esta arma, você pode realizar uma jogada de ataque corpo a corpo com a mesma arma contra uma segunda criatura a até 1,5 metro da primeira que também esteja ao seu alcance. Se acertar, a segunda criatura sofre o dano da arma, mas você não adiciona seu modificador de atributo a esse dano, a menos que esse modificador seja negativo. Você pode realizar esse ataque adicional apenas uma vez por turno.",
 };
 
+const damageTypesLista = [
+  "Ácido",
+  "Contundente",
+  "Cortante",
+  "Elétrico",
+  "Energético",
+  "Gélido",
+  "Ígneo",
+  "Necrótico",
+  "Perfurante",
+  "Psíquico",
+  "Radiante",
+  "Trovejante",
+  "Venenoso",
+];
+
 export let listaAtaques = [];
 export const listasDinamicas = {
   "def-res": [],
@@ -92,6 +108,7 @@ export const listasDinamicas = {
 let timerSalvar = null;
 let mudancaPendente = false;
 let ataqueEmEdicaoIdx = null;
+let modalAtkRefs = {};
 
 export const toInt = (val) => {
   const n = parseInt(val, 10);
@@ -105,7 +122,9 @@ const formatAttackNumber = (val) => {
   if (!Number.isFinite(val)) return "+0";
   const rounded = Math.round(val * 100) / 100;
   const isInteger = Math.abs(rounded - Math.round(rounded)) < 1e-9;
-  const text = isInteger ? `${Math.round(rounded)}` : `${rounded}`.replace(/\.0+$/, "");
+  const text = isInteger
+    ? `${Math.round(rounded)}`
+    : `${rounded}`.replace(/\.0+$/, "");
   return rounded >= 0 ? `+${text}` : text;
 };
 
@@ -140,27 +159,13 @@ const getAttackAttrMod = (attrId) => {
   return Math.floor((toInt(el.value) - 10) / 2);
 };
 
-const damageTypesLista = [
-  "Ácido",
-  "Contundente",
-  "Cortante",
-  "Elétrico",
-  "Energético",
-  "Gélido",
-  "Ígneo",
-  "Necrótico",
-  "Perfurante",
-  "Psíquico",
-  "Radiante",
-  "Trovejante",
-  "Venenoso",
-];
-
 const extrairDanoLegado = (dano = "") => {
   const texto = `${dano}`.trim();
   if (!texto) return { danoRoll: "", danoTipo: "" };
 
-  const tipoEncontrado = damageTypesLista.find((tipo) => texto.endsWith(` ${tipo}`));
+  const tipoEncontrado = damageTypesLista.find((tipo) =>
+    texto.endsWith(` ${tipo}`),
+  );
   if (!tipoEncontrado) return { danoRoll: texto, danoTipo: "" };
 
   return {
@@ -210,7 +215,7 @@ const normalizarAtaque = (atk = {}) => {
   const bonusExtraRaw =
     atk.bonusExtra !== undefined && atk.bonusExtra !== null
       ? atk.bonusExtra
-      : atk.bonus ?? "";
+      : (atk.bonus ?? "");
   const base = {
     ...atk,
     atributo: atk.atributo || "",
@@ -229,28 +234,27 @@ const normalizarAtaque = (atk = {}) => {
   };
 };
 
-const normalizarListaAtaques = (ataques = []) => ataques.map((atk) => normalizarAtaque(atk));
+const normalizarListaAtaques = (ataques = []) =>
+  ataques.map((atk) => normalizarAtaque(atk));
 
 const lerValoresModalAtaque = () => ({
-  nome: document.getElementById("atk-inp-nome")?.value.trim() || "",
-  atributo: document.getElementById("atk-inp-atributo")?.value || "",
-  proficiencia: document.getElementById("atk-inp-proficiencia")?.value || "0",
-  bonusExtra: document.getElementById("atk-inp-bonus-extra")?.value.trim() || "",
-  danoRoll: document.getElementById("atk-inp-dano-roll")?.value.trim() || "",
-  danoTipo: document.getElementById("atk-inp-dano-tipo")?.value || "",
-  alcance: document.getElementById("atk-inp-alcance")?.value.trim() || "",
-  maestria: document.getElementById("atk-inp-maestria")?.value || "",
-  desc: document.getElementById("atk-inp-desc")?.value.trim() || "",
+  nome: modalAtkRefs.nome?.value.trim() || "",
+  atributo: modalAtkRefs.atributo?.value || "",
+  proficiencia: modalAtkRefs.proficiencia?.value || "0",
+  bonusExtra: modalAtkRefs.bonusExtra?.value.trim() || "",
+  danoRoll: modalAtkRefs.danoRoll?.value.trim() || "",
+  danoTipo: modalAtkRefs.danoTipo?.value || "",
+  alcance: modalAtkRefs.alcance?.value.trim() || "",
+  maestria: modalAtkRefs.maestria?.value || "",
+  desc: modalAtkRefs.desc?.value.trim() || "",
 });
 
 const atualizarPreviewAtaque = () => {
-  const preview = document.getElementById("atk-inp-bonus-total");
-  if (!preview) return;
-
+  if (!modalAtkRefs.bonusTotal) return;
   const valores = lerValoresModalAtaque();
   const partes = getAttackParts(valores);
-  preview.value = formatAttackNumber(partes.total);
-  preview.title = getAttackSummary(valores);
+  modalAtkRefs.bonusTotal.value = formatAttackNumber(partes.total);
+  modalAtkRefs.bonusTotal.title = getAttackSummary(valores);
 };
 
 export const setCampo = (id, valor) => {
@@ -280,47 +284,36 @@ const tentarAdicionarTag = (inp) => {
 
 const abrirModalAtaque = (idx) => {
   ataqueEmEdicaoIdx = idx;
-  const modal = document.getElementById("attack-modal");
-  const titulo = document.getElementById("attack-modal-title");
-  const inpNome = document.getElementById("atk-inp-nome");
-  const inpAtributo = document.getElementById("atk-inp-atributo");
-  const inpProf = document.getElementById("atk-inp-proficiencia");
-  const inpBonusExtra = document.getElementById("atk-inp-bonus-extra");
-  const inpBonusTotal = document.getElementById("atk-inp-bonus-total");
-  const inpDanoRoll = document.getElementById("atk-inp-dano-roll");
-  const inpDanoTipo = document.getElementById("atk-inp-dano-tipo");
-  const inpAlcance = document.getElementById("atk-inp-alcance");
-  const inpMaestria = document.getElementById("atk-inp-maestria");
-  const inpDesc = document.getElementById("atk-inp-desc");
-
-  if (!modal) return;
+  if (!modalAtkRefs.modal) return;
 
   if (idx !== null && listaAtaques[idx]) {
-    const atk = normalizarAtaque(listaAtaques[idx]);
-    if (titulo) titulo.innerText = "EDITAR ATAQUE";
-    if (inpNome) inpNome.value = atk.nome || "";
-    if (inpAtributo) inpAtributo.value = atk.atributo || "";
-    if (inpProf) inpProf.value = atk.proficiencia || "0";
-    if (inpBonusExtra) inpBonusExtra.value = atk.bonusExtra || "";
-    if (inpDanoRoll) inpDanoRoll.value = atk.danoRoll || "";
-    if (inpDanoTipo) inpDanoTipo.value = atk.danoTipo || "";
-    if (inpAlcance) inpAlcance.value = atk.alcance || "";
-    if (inpMaestria) inpMaestria.value = atk.maestria || "";
-    if (inpDesc) inpDesc.value = atk.desc || "";
+    const atk = listaAtaques[idx];
+    if (modalAtkRefs.titulo) modalAtkRefs.titulo.textContent = "EDITAR ATAQUE";
+    if (modalAtkRefs.nome) modalAtkRefs.nome.value = atk.nome || "";
+    if (modalAtkRefs.atributo) modalAtkRefs.atributo.value = atk.atributo || "";
+    if (modalAtkRefs.proficiencia)
+      modalAtkRefs.proficiencia.value = atk.proficiencia || "0";
+    if (modalAtkRefs.bonusExtra)
+      modalAtkRefs.bonusExtra.value = atk.bonusExtra || "";
+    if (modalAtkRefs.danoRoll) modalAtkRefs.danoRoll.value = atk.danoRoll || "";
+    if (modalAtkRefs.danoTipo) modalAtkRefs.danoTipo.value = atk.danoTipo || "";
+    if (modalAtkRefs.alcance) modalAtkRefs.alcance.value = atk.alcance || "";
+    if (modalAtkRefs.maestria) modalAtkRefs.maestria.value = atk.maestria || "";
+    if (modalAtkRefs.desc) modalAtkRefs.desc.value = atk.desc || "";
   } else {
-    if (titulo) titulo.innerText = "NOVO ATAQUE";
-    if (inpNome) inpNome.value = "";
-    if (inpAtributo) inpAtributo.value = "";
-    if (inpProf) inpProf.value = "0";
-    if (inpBonusExtra) inpBonusExtra.value = "";
-    if (inpDanoRoll) inpDanoRoll.value = "";
-    if (inpDanoTipo) inpDanoTipo.value = "";
-    if (inpAlcance) inpAlcance.value = "";
-    if (inpMaestria) inpMaestria.value = "";
-    if (inpDesc) inpDesc.value = "";
+    if (modalAtkRefs.titulo) modalAtkRefs.titulo.textContent = "NOVO ATAQUE";
+    if (modalAtkRefs.nome) modalAtkRefs.nome.value = "";
+    if (modalAtkRefs.atributo) modalAtkRefs.atributo.value = "";
+    if (modalAtkRefs.proficiencia) modalAtkRefs.proficiencia.value = "0";
+    if (modalAtkRefs.bonusExtra) modalAtkRefs.bonusExtra.value = "";
+    if (modalAtkRefs.danoRoll) modalAtkRefs.danoRoll.value = "";
+    if (modalAtkRefs.danoTipo) modalAtkRefs.danoTipo.value = "";
+    if (modalAtkRefs.alcance) modalAtkRefs.alcance.value = "";
+    if (modalAtkRefs.maestria) modalAtkRefs.maestria.value = "";
+    if (modalAtkRefs.desc) modalAtkRefs.desc.value = "";
   }
   atualizarPreviewAtaque();
-  modal.style.display = "flex";
+  modalAtkRefs.modal.style.display = "flex";
 };
 
 export function montarEstruturaEstatica() {
@@ -365,7 +358,7 @@ export function montarEstruturaEstatica() {
         <span class="skill-name" title="${p.nome}">${p.nome}</span>
         <span class="skill-attr-badge">${p.sigla}</span>
         <span id="skill-total-${p.id}" class="skill-total">+0</span>
-        <button type="button" id="skill-prof-${p.id}" class="skill-dot" data-state="0"></button>
+        <button type="button" role="button" aria-label="Proficiência em ${p.nome}" id="skill-prof-${p.id}" class="skill-dot" data-state="0"></button>
       `;
       skillsContainer.appendChild(row);
     });
@@ -380,6 +373,38 @@ export function montarEstruturaEstatica() {
         dispararSalvoImediato();
       });
     });
+  }
+
+  modalAtkRefs = {
+    modal: document.getElementById("attack-modal"),
+    titulo: document.getElementById("attack-modal-title"),
+    nome: document.getElementById("atk-inp-nome"),
+    atributo: document.getElementById("atk-inp-atributo"),
+    proficiencia: document.getElementById("atk-inp-proficiencia"),
+    bonusExtra: document.getElementById("atk-inp-bonus-extra"),
+    bonusTotal: document.getElementById("atk-inp-bonus-total"),
+    danoRoll: document.getElementById("atk-inp-dano-roll"),
+    danoTipo: document.getElementById("atk-inp-dano-tipo"),
+    alcance: document.getElementById("atk-inp-alcance"),
+    maestria: document.getElementById("atk-inp-maestria"),
+    desc: document.getElementById("atk-inp-desc"),
+  };
+
+  if (modalAtkRefs.danoTipo) {
+    modalAtkRefs.danoTipo.innerHTML =
+      `<option value="">—</option>` +
+      damageTypesLista
+        .map((t) => `<option value="${t}">${t}</option>`)
+        .join("");
+  }
+
+  if (modalAtkRefs.maestria) {
+    modalAtkRefs.maestria.innerHTML =
+      `<option value="">—</option>` +
+      Object.keys(maestriasDescricoes)
+        .filter(Boolean)
+        .map((m) => `<option value="${m}">${m}</option>`)
+        .join("");
   }
 
   const abas = document.querySelectorAll(".tab-btn");
@@ -411,10 +436,9 @@ export function montarEstruturaEstatica() {
     };
   }
 
-  const modalAtk = document.getElementById("attack-modal");
   const closeAtk = document.getElementById("attack-modal-close");
   const saveAtkBtn = document.getElementById("atk-btn-save");
-  const attackModalInputs = [
+  const attackModalInputsIds = [
     "atk-inp-nome",
     "atk-inp-atributo",
     "atk-inp-proficiencia",
@@ -426,21 +450,21 @@ export function montarEstruturaEstatica() {
     "atk-inp-desc",
   ];
 
-  attackModalInputs.forEach((id) => {
+  attackModalInputsIds.forEach((id) => {
     const el = document.getElementById(id);
     if (!el) return;
-    el.addEventListener("input", atualizarPreviewAtaque);
-    el.addEventListener("change", atualizarPreviewAtaque);
+    const evt = el.tagName === "SELECT" ? "change" : "input";
+    el.addEventListener(evt, atualizarPreviewAtaque);
   });
 
-  if (closeAtk && modalAtk) {
+  if (closeAtk && modalAtkRefs.modal) {
     closeAtk.onclick = () => {
-      modalAtk.style.display = "none";
+      modalAtkRefs.modal.style.display = "none";
       ataqueEmEdicaoIdx = null;
     };
   }
 
-  if (saveAtkBtn && modalAtk) {
+  if (saveAtkBtn && modalAtkRefs.modal) {
     saveAtkBtn.onclick = () => {
       const novoAtk = normalizarAtaque(lerValoresModalAtaque());
 
@@ -450,7 +474,7 @@ export function montarEstruturaEstatica() {
         listaAtaques[ataqueEmEdicaoIdx] = novoAtk;
       }
 
-      modalAtk.style.display = "none";
+      modalAtkRefs.modal.style.display = "none";
       ataqueEmEdicaoIdx = null;
       renderizarAtaques();
       mudancaPendente = true;
@@ -476,24 +500,23 @@ export const renderizarAtaques = () => {
   if (!tbody) return;
   tbody.innerHTML = "";
   listaAtaques.forEach((atk, idx) => {
-    const atkNormalizado = normalizarAtaque(atk);
-    const mVal = atkNormalizado.maestria || "";
-    const resumo = getAttackSummary(atkNormalizado).replace(/"/g, "&quot;");
+    const mVal = atk.maestria || "";
+    const resumo = getAttackSummary(atk).replace(/"/g, "&quot;");
     const tr = document.createElement("tr");
     tr.innerHTML = `
-      <td class="read-only-cell">${atkNormalizado.nome || "—"}</td>
-      <td class="read-only-cell" title="${resumo}">${atkNormalizado.bonus || "—"}</td>
-      <td class="read-only-cell">${atkNormalizado.dano || "—"}</td>
-      <td class="read-only-cell">${atkNormalizado.alcance || "—"}</td>
+      <td class="read-only-cell">${atk.nome || "—"}</td>
+      <td class="read-only-cell" title="${resumo}">${atk.bonus || "—"}</td>
+      <td class="read-only-cell">${atk.dano || "—"}</td>
+      <td class="read-only-cell">${atk.alcance || "—"}</td>
       <td>
         <div class="mastery-cell">
           <span class="mastery-badge">${mVal || "—"}</span>
-          ${mVal ? `<button type="button" class="eye-btn" data-eye="${idx}">👁</button>` : ""}
+          ${mVal ? `<button type="button" class="eye-btn" aria-label="Ver descrição de maestria" data-eye="${idx}">👁</button>` : ""}
         </div>
       </td>
       <td style="text-align:center; white-space:nowrap;">
-        <button type="button" class="action-icon" data-edit-atk="${idx}">✏️</button>
-        <span class="tag-remove" data-del-atk="${idx}">×</span>
+        <button type="button" class="action-icon" aria-label="Editar ataque ${atk.nome || ""}" data-edit-atk="${idx}">✏️</button>
+        <span class="tag-remove" role="button" aria-label="Eliminar ataque ${atk.nome || ""}" data-del-atk="${idx}">×</span>
       </td>
     `;
     tbody.appendChild(tr);
@@ -501,20 +524,20 @@ export const renderizarAtaques = () => {
 
   tbody.querySelectorAll("[data-edit-atk]").forEach((btn) => {
     btn.onclick = (e) => {
-      abrirModalAtaque(parseInt(e.currentTarget.dataset.editAtk));
+      abrirModalAtaque(parseInt(e.currentTarget.dataset.editAtk, 10));
     };
   });
 
   tbody.querySelectorAll("[data-eye]").forEach((btn) => {
     btn.onclick = (e) => {
-      const i = parseInt(e.currentTarget.dataset.eye);
+      const i = parseInt(e.currentTarget.dataset.eye, 10);
       const sel = listaAtaques[i]?.maestria || "";
       const modal = document.getElementById("mastery-modal");
       const title = document.getElementById("mastery-title");
       const desc = document.getElementById("mastery-desc");
       if (modal && title && desc) {
-        title.innerText = sel ? sel.toUpperCase() : "MAESTRIA";
-        desc.innerText = maestriasDescricoes[sel] || maestriasDescricoes[""];
+        title.textContent = sel ? sel.toUpperCase() : "MAESTRIA";
+        desc.textContent = maestriasDescricoes[sel] || maestriasDescricoes[""];
         modal.style.display = "block";
       }
     };
@@ -522,7 +545,7 @@ export const renderizarAtaques = () => {
 
   tbody.querySelectorAll("[data-del-atk]").forEach((btn) => {
     btn.onclick = (e) => {
-      listaAtaques.splice(parseInt(e.currentTarget.dataset.delAtk), 1);
+      listaAtaques.splice(parseInt(e.currentTarget.dataset.delAtk, 10), 1);
       renderizarAtaques();
       mudancaPendente = true;
       dispararSalvoImediato();
@@ -537,13 +560,13 @@ export const renderizarTags = (chave) => {
   listasDinamicas[chave].forEach((texto, idx) => {
     const tag = document.createElement("div");
     tag.className = "sheet-tag";
-    tag.innerHTML = `<span>${texto}</span><span class="tag-remove" data-key="${chave}" data-idx="${idx}">×</span>`;
+    tag.innerHTML = `<span>${texto}</span><span class="tag-remove" role="button" aria-label="Excluir tag ${texto}" data-key="${chave}" data-idx="${idx}">×</span>`;
     el.appendChild(tag);
   });
-  document.querySelectorAll(".tag-remove[data-key]").forEach((btn) => {
+  el.querySelectorAll(".tag-remove[data-key]").forEach((btn) => {
     btn.onclick = (e) => {
-      const k = e.target.dataset.key;
-      const i = parseInt(e.target.dataset.idx);
+      const k = e.currentTarget.dataset.key;
+      const i = parseInt(e.currentTarget.dataset.idx, 10);
       listasDinamicas[k].splice(i, 1);
       renderizarTags(k);
       mudancaPendente = true;
@@ -565,7 +588,7 @@ export const recalcularTudo = () => {
   if (profEl) profEl.value = formatMod(profBonus);
 
   const hdMaxEl = document.getElementById("hd-max-label");
-  if (hdMaxEl) hdMaxEl.innerText = nivel;
+  if (hdMaxEl) hdMaxEl.textContent = nivel;
 
   const hpAtual = toInt(document.getElementById("char-hp-atual")?.value);
   const hpMax = toInt(document.getElementById("char-hp-max")?.value);
@@ -588,24 +611,24 @@ export const recalcularTudo = () => {
   const classeVal = document.getElementById("char-class")?.value.trim();
   const hdMirror = document.getElementById("hd-class-mirror");
   if (hdMirror) {
-    hdMirror.innerText = classeVal ? `(${classeVal})` : "";
+    hdMirror.textContent = classeVal ? `(${classeVal})` : "";
   }
 
   const desVal = toInt(document.getElementById("attr-destreza")?.value);
   const desMod = Math.floor((desVal - 10) / 2);
   const initEl = document.getElementById("char-init-val");
-  if (initEl) initEl.innerText = formatMod(desMod);
+  if (initEl) initEl.textContent = formatMod(desMod);
 
   atributosLista.forEach((attr) => {
     const val = toInt(document.getElementById(`attr-${attr.id}`)?.value);
     const mod = Math.floor((val - 10) / 2);
     const modEl = document.getElementById(`mod-${attr.id}`);
-    if (modEl) modEl.innerText = formatMod(mod);
+    if (modEl) modEl.textContent = formatMod(mod);
 
     const isProfSave = document.getElementById(`save-prof-${attr.id}`)?.checked;
     const saveTotal = mod + (isProfSave ? profBonus : 0);
     const saveEl = document.getElementById(`save-val-${attr.id}`);
-    if (saveEl) saveEl.innerText = formatMod(saveTotal);
+    if (saveEl) saveEl.textContent = formatMod(saveTotal);
   });
 
   periciasLista.forEach((p) => {
@@ -618,13 +641,84 @@ export const recalcularTudo = () => {
     const total = attrMod + profMult * profBonus;
     const totalEl = document.getElementById(`skill-total-${p.id}`);
     if (totalEl) {
-      totalEl.innerText = formatMod(total);
+      totalEl.textContent = formatMod(total);
       totalEl.setAttribute("data-prof", profMult > 0 ? "true" : "false");
     }
   });
 
   renderizarAtaques();
   atualizarPreviewAtaque();
+};
+
+const popularCampos = (d, protegerFoco) => {
+  const setVal = (id, val, fb) => {
+    const el = document.getElementById(id);
+    if (!el || (protegerFoco && document.activeElement === el)) return;
+    const v = val !== undefined && val !== null ? val : fb;
+    if (el.type === "checkbox") {
+      el.checked = !!v;
+    } else {
+      el.value = v !== undefined ? v : "";
+    }
+  };
+
+  setVal("char-name", d.nome, "");
+  setVal("char-class", d.classe, "");
+  setVal("char-subclass", d.subclasse, "");
+  setVal("char-level", d.nivel, 1);
+  setVal("char-species", d.especie, "");
+  setVal("char-background", d.antecedente, "");
+  setVal("char-xp", d.xp, "");
+  setVal("char-ac", d.ca, 10);
+  setVal("char-speed", d.deslocamento, "9m");
+  setVal("char-hp-atual", d.hp_atual, 10);
+  setVal("char-hp-max", d.hp_max, 10);
+  setVal("char-hp-temp", d.hp_temp, 0);
+  setVal("char-hd-atual", d.hd_atual, d.nivel || 1);
+  setVal("char-hd-type", d.hd_type, "1d8");
+
+  const inspEl = document.getElementById("char-inspiration");
+  if (inspEl && !(protegerFoco && document.activeElement === inspEl)) {
+    inspEl.checked = !!d.inspiracao;
+  }
+
+  setVal("char-notes", d.notas, "");
+  setVal("char-about", d.sobre, "");
+
+  atributosLista.forEach((attr) => {
+    if (d.atributos?.[attr.id] !== undefined)
+      setVal(`attr-${attr.id}`, d.atributos[attr.id]);
+    if (d.saves?.[attr.id] !== undefined)
+      setVal(`save-prof-${attr.id}`, d.saves[attr.id]);
+  });
+
+  periciasLista.forEach((p) => {
+    if (d.skills?.prof?.[p.id] !== undefined) {
+      let val = d.skills.prof[p.id];
+      if (val === true) val = 1;
+      if (val === false) val = 0;
+      val = toInt(val);
+      const el = document.getElementById(`skill-prof-${p.id}`);
+      if (el && !(protegerFoco && document.activeElement === el)) {
+        el.setAttribute("data-state", val);
+        el.value = val;
+      }
+    }
+  });
+
+  deathSavesLista.forEach((id) => {
+    if (d.death_saves?.[id] !== undefined) setVal(id, d.death_saves[id]);
+  });
+
+  if (d.tags) {
+    Object.keys(listasDinamicas).forEach((k) => {
+      listasDinamicas[k] = d.tags[k] || [];
+      renderizarTags(k);
+    });
+  }
+
+  listaAtaques = normalizarListaAtaques(d.ataques || []);
+  recalcularTudo();
 };
 
 export async function carregarFicha() {
@@ -683,76 +777,14 @@ export async function carregarFicha() {
     return;
   }
 
-  const d = data.dados;
-  const setIf = (id, val, fallback) => {
-    const el = document.getElementById(id);
-    if (el) el.value = val !== undefined ? val : fallback;
-  };
-
-  setIf("char-name", d.nome, "");
-  setIf("char-class", d.classe, "");
-  setIf("char-subclass", d.subclasse, "");
-  setIf("char-level", d.nivel, 1);
-  setIf("char-species", d.especie, "");
-  setIf("char-background", d.antecedente, "");
-  setIf("char-xp", d.xp, "");
-  setIf("char-ac", d.ca, 10);
-  setIf("char-speed", d.deslocamento, "9m");
-  setIf("char-hp-atual", d.hp_atual, 10);
-  setIf("char-hp-max", d.hp_max, 10);
-  setIf("char-hp-temp", d.hp_temp, 0);
-  setIf("char-hd-atual", d.hd_atual, d.nivel || 1);
-  setIf("char-hd-type", d.hd_type, "1d8");
-  setIf("char-notes", d.notas, "");
-  setIf("char-about", d.sobre, "");
-
-  const inspEl = document.getElementById("char-inspiration");
-  if (inspEl) inspEl.checked = !!d.inspiracao;
-
-  atributosLista.forEach((attr) => {
-    const el = document.getElementById(`attr-${attr.id}`);
-    if (el && d.atributos?.[attr.id] !== undefined)
-      el.value = d.atributos[attr.id];
-    const saveEl = document.getElementById(`save-prof-${attr.id}`);
-    if (saveEl && d.saves?.[attr.id] !== undefined)
-      saveEl.checked = d.saves[attr.id];
-  });
-
-  periciasLista.forEach((p) => {
-    const dotEl = document.getElementById(`skill-prof-${p.id}`);
-    if (dotEl && d.skills?.prof?.[p.id] !== undefined) {
-      let val = d.skills.prof[p.id];
-      if (val === true) val = 1;
-      if (val === false) val = 0;
-      val = toInt(val);
-      dotEl.setAttribute("data-state", val);
-      dotEl.value = val;
-    }
-  });
-
-  deathSavesLista.forEach((id) => {
-    const el = document.getElementById(id);
-    if (el && d.death_saves) el.checked = !!d.death_saves[id];
-  });
-
-  listaAtaques = normalizarListaAtaques(d.ataques || []);
-  renderizarAtaques();
-
-  if (d.tags) {
-    Object.keys(listasDinamicas).forEach((k) => {
-      listasDinamicas[k] = d.tags[k] || [];
-      renderizarTags(k);
-    });
-  }
-
-  recalcularTudo();
+  popularCampos(data.dados, false);
 }
 
 export async function executarSalvar() {
   const status = document.getElementById("status-msg");
   if (!status) return;
   status.style.color = "#ffaa00";
-  status.innerText = "☁️ Sincronizando...";
+  status.textContent = "☁️ Sincronizando...";
 
   const savesEstado = {};
   const atributosAtualizados = {};
@@ -813,14 +845,14 @@ export async function executarSalvar() {
 
   if (!error) {
     status.style.color = "#00cc66";
-    status.innerText = "✓ Salvo";
+    status.textContent = "✓ Salvo";
     setTimeout(() => {
-      status.innerText = "";
+      status.textContent = "";
     }, 1500);
   } else {
     console.error(error);
     status.style.color = "#ff4444";
-    status.innerText = "Erro ao salvar";
+    status.textContent = "Erro ao salvar";
   }
 }
 
@@ -829,7 +861,7 @@ export function agendarSalvoSilencioso() {
   const status = document.getElementById("status-msg");
   if (status) {
     status.style.color = "#888";
-    status.innerText = "alterações pendentes...";
+    status.textContent = "alterações pendentes...";
   }
   clearTimeout(timerSalvar);
   timerSalvar = setTimeout(() => {
@@ -870,60 +902,5 @@ export function registrarOuvintesDeEventos() {
 }
 
 export function sincronizarDadosDoBanco(d) {
-  setCampo("char-name", d.nome || "");
-  setCampo("char-class", d.classe || "");
-  setCampo("char-subclass", d.subclasse || "");
-  setCampo("char-level", d.nivel || 1);
-  setCampo("char-species", d.especie || "");
-  setCampo("char-background", d.antecedente || "");
-  setCampo("char-xp", d.xp || "");
-  setCampo("char-ac", d.ca !== undefined ? d.ca : 10);
-  setCampo("char-speed", d.deslocamento || "9m");
-  setCampo("char-hp-atual", d.hp_atual || 10);
-  setCampo("char-hp-max", d.hp_max || 10);
-  setCampo("char-hp-temp", d.hp_temp || 0);
-  setCampo(
-    "char-hd-atual",
-    d.hd_atual !== undefined ? d.hd_atual : d.nivel || 1,
-  );
-  setCampo("char-hd-type", d.hd_type || "1d8");
-  setCampo("char-inspiration", d.inspiracao);
-  setCampo("char-notes", d.notas || "");
-  setCampo("char-about", d.sobre || "");
-
-  atributosLista.forEach((attr) => {
-    if (d.atributos?.[attr.id] !== undefined)
-      setCampo(`attr-${attr.id}`, d.atributos[attr.id]);
-    if (d.saves?.[attr.id] !== undefined)
-      setCampo(`save-prof-${attr.id}`, d.saves[attr.id]);
-  });
-
-  periciasLista.forEach((p) => {
-    if (d.skills?.prof?.[p.id] !== undefined) {
-      let val = d.skills.prof[p.id];
-      if (val === true) val = 1;
-      if (val === false) val = 0;
-      val = toInt(val);
-      const el = document.getElementById(`skill-prof-${p.id}`);
-      if (el) {
-        el.setAttribute("data-state", val);
-        el.value = val;
-      }
-    }
-  });
-
-  deathSavesLista.forEach((id) => {
-    if (d.death_saves?.[id] !== undefined) setCampo(id, d.death_saves[id]);
-  });
-
-  if (d.tags) {
-    Object.keys(listasDinamicas).forEach((k) => {
-      listasDinamicas[k] = d.tags[k] || [];
-      renderizarTags(k);
-    });
-  }
-
-  listaAtaques = normalizarListaAtaques(d.ataques || []);
-  renderizarAtaques();
-  recalcularTudo();
+  popularCampos(d, true);
 }

@@ -29,15 +29,21 @@ export function iniciarAuth() {
   }
 
   const pAtual = mesa.find((p) => p.id === slug);
+
+  if (!pAtual) {
+    window.location.href = "/";
+    return false;
+  }
+
   const pinOk = localStorage.getItem(`auth_ok_${slug}`);
 
-  if (pAtual && pinOk !== pAtual.pin) {
+  if (pinOk !== pAtual.pin) {
     if (mainApp) mainApp.style.display = "none";
     if (pinModal) pinModal.style.display = "flex";
 
     const targetName = document.getElementById("pin-target-name");
     if (targetName)
-      targetName.innerText = `GRIMÓRIO DE ${pAtual.nome.toUpperCase()}`;
+      targetName.textContent = `GRIMÓRIO DE ${pAtual.nome.toUpperCase()}`;
 
     const inp = document.getElementById("pin-input");
     const err = document.getElementById("pin-error");
@@ -49,7 +55,7 @@ export function iniciarAuth() {
         if (pinModal) pinModal.style.display = "none";
         if (mainApp) mainApp.style.display = "block";
       } else {
-        if (err) err.innerText = "CÓDIGO INVÁLIDO";
+        if (err) err.textContent = "CÓDIGO INVÁLIDO";
         inp.value = "";
       }
     };
