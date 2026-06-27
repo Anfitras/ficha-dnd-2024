@@ -1136,3 +1136,21 @@ input[type="checkbox"]:checked::before {
 .btn-primary-gold:hover {
   background: var(--gold-bright);
 }
+
+.conditions-container {
+  min-height: 55px;
+  align-items: center;
+}
+
+.condition-select {
+  background: transparent !important;
+  border: none !important;
+  color: var(--gold-bright) !important;
+  font-weight: 800 !important;
+  cursor: pointer;
+}
+
+.condition-select option {
+  background: var(--bg-card);
+  color: var(--text-main);
+}

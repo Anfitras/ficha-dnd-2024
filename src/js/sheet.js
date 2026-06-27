@@ -59,6 +59,36 @@ export const deathSavesLista = [
   "death-f-3",
 ];
 
+const condicoesDescricoes = {
+  Amedrontado:
+    "Enquanto tem a condição Amedrontado, você sofre os seguintes efeitos.<br><br><strong>Testes de Atributo e Ataques Afetados.</strong> Você tem Desvantagem em testes de atributo e jogadas de ataque enquanto a fonte do medo estiver dentro da linha de visão.<br><br><strong>Não Pode Se Aproximar.</strong> Você não pode se aproximar voluntariamente da fonte do medo.",
+  Atordoado:
+    "Enquanto tem a condição Atordoado, você sofre os seguintes efeitos.<br><br><strong>Incapacitado.</strong> Você tem a condição Incapacitado.<br><br><strong>Salvaguardas Afetadas.</strong> Você falha automaticamente em salvaguardas de Força e Destreza.<br><br><strong>Ataques Afetados.</strong> Jogadas de ataque contra você têm Vantagem.",
+  Caído:
+    "Enquanto tem a condição Caído, você sofre os seguintes efeitos.<br><br><strong>Movimento Restrito.</strong> Suas únicas opções de movimento são rastejar ou gastar uma quantidade de movimento equivalente à metade do seu Deslocamento (arredondado para baixo) para se levantar e, assim, encerrar a condição. Se seu Deslocamento for 0, você não consegue se levantar.<br><br><strong>Ataques Afetados.</strong> Você tem Desvantagem em jogadas de ataque. Uma jogada de ataque contra você tem Vantagem se o atacante estiver a até 1,5 metro de você. Caso contrário, essa jogada de ataque tem Desvantagem.",
+  Cego: "Enquanto tem a condição Cego, você sofre os seguintes efeitos.<br><br><strong>Não Pode Ver.</strong> Você não consegue ver e falha automaticamente em qualquer teste de atributo que dependa da visão.<br><br><strong>Ataques Afetados.</strong> Jogadas de ataque contra você têm Vantagem, enquanto suas jogadas de ataque têm Desvantagem.",
+  Contido:
+    "Enquanto tem a condição Contido, você sofre os seguintes efeitos.<br><br><strong>Deslocamento 0.</strong> Seu Deslocamento é 0 e não pode aumentar.<br><br><strong>Ataques Afetados.</strong> Jogadas de ataque contra você têm Vantagem e suas jogadas de ataque têm Desvantagem.<br><br><strong>Salvaguardas Afetadas.</strong> Você tem Desvantagem em salvaguardas de Destreza.",
+  Enfeitiçado:
+    "Enquanto tem a condição Enfeitiçado, você sofre os seguintes efeitos:<br><br><strong>Não Pode Atacar Quem o Enfeitiçou.</strong> Você não pode atacar quem o enfeitiçou nem o ter como alvo de ataques que utilizem atributos ou efeitos mágicos.<br><br><strong>Vantagem Social.</strong> Quem o enfeitiçou tem Vantagem em qualquer teste de atributo para interações sociais com você.",
+  Envenenado:
+    "Enquanto tem a condição Envenenado, você sofre os seguintes efeitos.<br><br><strong>Testes de Atributo e Ataques Afetados.</strong> Você tem Desvantagem em jogadas de ataque e testes de atributo.",
+  Exaustão:
+    "Enquanto tem a condição Exaustão, você sofre os seguintes efeitos.<br><br><strong>Níveis de Exaustão.</strong> Essa condição é acumulativa. Cada vez que você a adquire, recebe 1 nível de Exaustão. Você morre se seu nível de Exaustão atingir 6.<br><br><strong>Testes de D20 Afetados.</strong> Ao realizar um Teste de D20, o resultado é reduzido em 2 vezes o seu nível de Exaustão.<br><br><strong>Deslocamento Reduzido.</strong> Seu Deslocamento é reduzido por uma quantidade de metros igual a 1,5 vezes o seu nível de Exaustão.<br><br><strong>Remoção de Níveis de Exaustão.</strong> Completar um Descanso Longo remove 1 dos seus níveis de Exaustão. Quando seu nível de Exaustão chega a 0 a condição encerra.",
+  Imobilizado:
+    "Enquanto tem a condição Imobilizado, você sofre os seguintes efeitos.<br><br><strong>Deslocamento 0.</strong> Seu Deslocamento é 0 e não pode aumentar.<br><br><strong>Ataques Afetados.</strong> Você tem Desvantagem em jogadas de ataque contra qualquer alvo que não seja o imobilizador.<br><br><strong>Móvel.</strong> O imobilizador pode arrastá-lo ou carregá-lo consigo, mas cada metro de movimento custa 1 metro adicional, a menos que você seja Minúsculo ou dois ou mais tamanhos menores que ele.",
+  Inconsciente:
+    "Enquanto tem a condição Inconsciente, você sofre os seguintes efeitos.<br><br><strong>Inerte.</strong> Você tem as condições Caído e Incapacitado e solta qualquer coisa que estiver segurando. Quando esta condição se encerra, você continua Caído.<br><br><strong>Deslocamento 0.</strong> Seu Deslocamento é 0 e não pode ser aumentado.<br><br><strong>Ataques Afetados.</strong> Jogadas de ataque contra você têm Vantagem.<br><br><strong>Salvaguardas Afetadas.</strong> Você falha automaticamente em salvaguardas de Força e Destreza.<br><br><strong>Acertos Críticos Automáticos.</strong> Qualquer jogada de ataque que o atinge é um Acerto Crítico se o atacante estiver a até 1,5 metro de você.<br><br><strong>Alheio.</strong> Você não está ciente do que está ao seu redor.",
+  Invisível:
+    "Enquanto tem a condição Invisível, você sofre os seguintes efeitos.<br><br><strong>Surpresa.</strong> Se você está Invisível quando joga Iniciativa, tem Vantagem na jogada.<br><br><strong>Oculto.</strong> Você não é afetado por nenhum efeito que exija que seu alvo seja visto, a menos que o criador do efeito possa vê-lo de alguma forma. Qualquer equipamento que você estiver vestindo ou carregando também está oculto.<br><br><strong>Ataques Afetados.</strong> Jogadas de ataque contra você têm Desvantagem, enquanto suas jogadas de ataque têm Vantagem. Se uma criatura puder vê-lo de alguma forma, você não recebe esse benefício contra ela.",
+  Paralisado:
+    "Enquanto tem a condição Paralisado, você sofre os seguintes efeitos.<br><br><strong>Incapacitado.</strong> Você adquire a condição Incapacitado.<br><br><strong>Deslocamento 0.</strong> Seu Deslocamento é 0 e não pode aumentar.<br><br><strong>Ataques Afetados.</strong> Jogadas de ataque contra você têm Vantagem.<br><br><strong>Acertos Críticos Automáticos.</strong> Qualquer jogada de ataque que o atinge é um Acerto Crítico se o atacante estiver a até 1,5 metro de você.<br><br><strong>Salvaguardas Afetadas.</strong> Você falha automaticamente em salvaguardas de Força e Destreza.",
+  Petrificado:
+    "Enquanto tem a condição Petrificado, você sofre os seguintes efeitos.<br><br><strong>Transformado em Substância Inanimada.</strong> Você é transformado, juntamente com qualquer objeto não mágico que esteja vestindo ou carregando, em uma substância sólida e inanimada (geralmente pedra). Seu peso aumenta em dez vezes e você para de envelhecer.<br><br><strong>Incapacitado.</strong> Você adquire a condição Incapacitado.<br><br><strong>Deslocamento 0.</strong> Seu Deslocamento é 0 e não pode aumentar.<br><br><strong>Ataques Afetados.</strong> Jogadas de ataque contra você têm Vantagem.<br><br><strong>Salvaguardas Afetadas.</strong> Você falha automaticamente em salvaguardas de Força e Destreza.<br><br><strong>Resistência a Dano.</strong> Você tem Resistência a todos os danos.<br><br><strong>Imunidade a Veneno.</strong> Você tem Imunidade à condição Envenenado.",
+  Surdo:
+    "Enquanto estiver na condição Surdo, você sofre o seguinte efeito.<br><br><strong>Não Pode Ouvir.</strong> Você não pode ouvir e falha automaticamente em qualquer teste de atributo que dependa da audição.",
+};
+
 const maestriasDescricoes = {
   "": "Nenhuma maestria selecionada para esta arma.",
   Afligir:
@@ -96,6 +126,7 @@ const damageTypesLista = [
 
 export let listaAtaques = [];
 export const listasDinamicas = {
+  condicoes: [],
   "def-res": [],
   "def-imun": [],
   "def-vuln": [],
@@ -162,12 +193,10 @@ const getAttackAttrMod = (attrId) => {
 const extrairDanoLegado = (dano = "") => {
   const texto = `${dano}`.trim();
   if (!texto) return { danoRoll: "", danoTipo: "" };
-
   const tipoEncontrado = damageTypesLista.find((tipo) =>
     texto.endsWith(` ${tipo}`),
   );
   if (!tipoEncontrado) return { danoRoll: texto, danoTipo: "" };
-
   return {
     danoRoll: texto.slice(0, -1 * (tipoEncontrado.length + 1)).trim(),
     danoTipo: tipoEncontrado,
@@ -180,7 +209,6 @@ const getAttackParts = (atk = {}) => {
   const profPart = profBonus * getAttackProfMultiplier(atk.proficiencia);
   const extraPart = toInt(atk.bonusExtra ?? atk.bonus);
   const total = attrMod + profPart + extraPart;
-
   return { attrMod, profBonus, profPart, extraPart, total };
 };
 
@@ -188,18 +216,12 @@ const getAttackSummary = (atk = {}) => {
   const parts = getAttackParts(atk);
   const attrMeta = getAttackAttrMeta(atk.atributo);
   const detailParts = [];
-
-  if (attrMeta) {
+  if (attrMeta)
     detailParts.push(`${attrMeta.nome} ${formatAttackNumber(parts.attrMod)}`);
-  }
-
   detailParts.push(`Prof ${formatAttackNumber(parts.profPart)}`);
-
   const bonusExtraRaw = `${atk.bonusExtra ?? atk.bonus ?? ""}`.trim();
-  if (bonusExtraRaw || parts.extraPart !== 0) {
+  if (bonusExtraRaw || parts.extraPart !== 0)
     detailParts.push(`Bônus ${formatAttackNumber(parts.extraPart)}`);
-  }
-
   return `${detailParts.join(" + ")} = ${formatAttackNumber(parts.total)}`;
 };
 
@@ -225,7 +247,6 @@ const normalizarAtaque = (atk = {}) => {
     danoTipo: `${atk.danoTipo ?? legadoDano.danoTipo ?? ""}`.trim(),
   };
   const parts = getAttackParts(base);
-
   return {
     ...base,
     bonus: formatAttackNumber(parts.total),
@@ -285,7 +306,6 @@ const tentarAdicionarTag = (inp) => {
 const abrirModalAtaque = (idx) => {
   ataqueEmEdicaoIdx = idx;
   if (!modalAtkRefs.modal) return;
-
   if (idx !== null && listaAtaques[idx]) {
     const atk = listaAtaques[idx];
     if (modalAtkRefs.titulo) modalAtkRefs.titulo.textContent = "EDITAR ATAQUE";
@@ -337,7 +357,6 @@ export function montarEstruturaEstatica() {
       `;
       gridAttr.appendChild(cardA);
     }
-
     if (gridSaves) {
       const cardS = document.createElement("div");
       cardS.className = "save-box";
@@ -372,6 +391,28 @@ export function montarEstruturaEstatica() {
         recalcularTudo();
         dispararSalvoImediato();
       });
+    });
+  }
+
+  const condSelect = document.getElementById("condition-adder");
+  if (condSelect) {
+    Object.keys(condicoesDescricoes).forEach((c) => {
+      const opt = document.createElement("option");
+      opt.value = c;
+      opt.textContent = c;
+      condSelect.appendChild(opt);
+    });
+
+    condSelect.addEventListener("change", (e) => {
+      const val = e.target.value;
+      if (!val) return;
+      if (!listasDinamicas["condicoes"].includes(val)) {
+        listasDinamicas["condicoes"].push(val);
+        renderizarTags("condicoes");
+        mudancaPendente = true;
+        dispararSalvoImediato();
+      }
+      e.target.value = "";
     });
   }
 
@@ -467,13 +508,11 @@ export function montarEstruturaEstatica() {
   if (saveAtkBtn && modalAtkRefs.modal) {
     saveAtkBtn.onclick = () => {
       const novoAtk = normalizarAtaque(lerValoresModalAtaque());
-
       if (ataqueEmEdicaoIdx === null) {
         listaAtaques.push(novoAtk);
       } else {
         listaAtaques[ataqueEmEdicaoIdx] = novoAtk;
       }
-
       modalAtkRefs.modal.style.display = "none";
       ataqueEmEdicaoIdx = null;
       renderizarAtaques();
@@ -482,7 +521,7 @@ export function montarEstruturaEstatica() {
     };
   }
 
-  document.querySelectorAll(".tag-adder").forEach((inp) => {
+  document.querySelectorAll(".tag-adder:not(select)").forEach((inp) => {
     inp.addEventListener("keydown", (e) => {
       if (e.key === "Enter") {
         e.preventDefault();
@@ -560,9 +599,28 @@ export const renderizarTags = (chave) => {
   listasDinamicas[chave].forEach((texto, idx) => {
     const tag = document.createElement("div");
     tag.className = "sheet-tag";
-    tag.innerHTML = `<span>${texto}</span><span class="tag-remove" role="button" aria-label="Excluir tag ${texto}" data-key="${chave}" data-idx="${idx}">×</span>`;
+    const isCond = chave === "condicoes";
+    tag.innerHTML = `<span>${texto}</span>${isCond ? `<button type="button" class="eye-btn" aria-label="Ver descrição de ${texto}" data-cond-eye="${texto}">👁</button>` : ""}<span class="tag-remove" role="button" aria-label="Excluir tag ${texto}" data-key="${chave}" data-idx="${idx}">×</span>`;
     el.appendChild(tag);
   });
+
+  if (chave === "condicoes") {
+    el.querySelectorAll("[data-cond-eye]").forEach((btn) => {
+      btn.onclick = (e) => {
+        const nome = e.currentTarget.dataset.condEye;
+        const modal = document.getElementById("mastery-modal");
+        const title = document.getElementById("mastery-title");
+        const desc = document.getElementById("mastery-desc");
+        if (modal && title && desc) {
+          title.textContent = nome.toUpperCase();
+          desc.innerHTML =
+            condicoesDescricoes[nome] || "Descrição indisponível.";
+          modal.style.display = "block";
+        }
+      };
+    });
+  }
+
   el.querySelectorAll(".tag-remove[data-key]").forEach((btn) => {
     btn.onclick = (e) => {
       const k = e.currentTarget.dataset.key;
@@ -598,7 +656,6 @@ export const recalcularTudo = () => {
     let pct = hpMax > 0 ? (hpAtual / hpMax) * 100 : 0;
     pct = Math.max(0, Math.min(100, pct));
     hpBar.style.width = `${pct}%`;
-
     if (pct > 50) {
       hpBar.style.backgroundColor = "#00cc66";
     } else if (pct > 25) {
@@ -634,10 +691,8 @@ export const recalcularTudo = () => {
   periciasLista.forEach((p) => {
     const dotEl = document.getElementById(`skill-prof-${p.id}`);
     const profMult = toInt(dotEl?.getAttribute("data-state"));
-
     const attrVal = toInt(document.getElementById(`attr-${p.attr}`)?.value);
     const attrMod = Math.floor((attrVal - 10) / 2);
-
     const total = attrMod + profMult * profBonus;
     const totalEl = document.getElementById(`skill-total-${p.id}`);
     if (totalEl) {
@@ -761,6 +816,7 @@ export async function carregarFicha() {
       saves: {},
       skills: { prof: {} },
       tags: {
+        condicoes: [],
         "def-res": [],
         "def-imun": [],
         "def-vuln": [],
@@ -883,11 +939,9 @@ export function registrarOuvintesDeEventos() {
       recalcularTudo();
       agendarSalvoSilencioso();
     });
-
     appEl.addEventListener("focusout", () => {
       dispararSalvoImediato();
     });
-
     appEl.addEventListener("change", () => {
       recalcularTudo();
       dispararSalvoImediato();
