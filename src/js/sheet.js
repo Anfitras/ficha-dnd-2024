@@ -389,6 +389,7 @@ export function montarEstruturaEstatica() {
         e.currentTarget.setAttribute("data-state", proximo);
         e.currentTarget.value = proximo;
         recalcularTudo();
+        mudancaPendente = true;
         dispararSalvoImediato();
       });
     });
