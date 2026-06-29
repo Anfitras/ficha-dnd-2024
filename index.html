@@ -5,7 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Ficha D&D 5e - Roll20 Dark</title>
     <link rel="stylesheet" href="./src/css/style.css" />
-    <link rel="shortcut icon" href="assets/dadoFavicon.ico" type="image/x-icon">
+    <link
+      rel="shortcut icon"
+      href="assets/dadoFavicon.ico"
+      type="image/x-icon"
+    />
   </head>
   <body>
     <div id="home-hub" class="home-container">
@@ -323,6 +327,51 @@
             </div>
           </div>
           <div id="tab-about" class="tab-content">
+            <div class="panel">
+              <div class="panel-header">CARACTERÍSTICAS</div>
+              <div class="characteristics-grid">
+                <div class="charac-box">
+                  <label>Gênero</label>
+                  <input type="text" id="char-gender" placeholder="—" />
+                </div>
+                <div class="charac-box">
+                  <label>Cor dos Olhos</label>
+                  <input type="text" id="char-eyes" placeholder="—" />
+                </div>
+                <div class="charac-box">
+                  <label>Tamanho</label>
+                  <select id="char-size">
+                    <option value="Minúsculo">Minúsculo</option>
+                    <option value="Pequeno">Pequeno</option>
+                    <option value="Médio" selected>Médio</option>
+                    <option value="Grande">Grande</option>
+                    <option value="Enorme">Enorme</option>
+                    <option value="Colossal">Colossal</option>
+                  </select>
+                </div>
+                <div class="charac-box">
+                  <label>Altura</label>
+                  <input type="text" id="char-height" placeholder="m" />
+                </div>
+                <div class="charac-box">
+                  <label>Cor do Cabelo</label>
+                  <input type="text" id="char-hair" placeholder="—" />
+                </div>
+                <div class="charac-box">
+                  <label>Cor da Pele</label>
+                  <input type="text" id="char-skin" placeholder="—" />
+                </div>
+                <div class="charac-box">
+                  <label>Idade</label>
+                  <input type="text" id="char-age" placeholder="—" />
+                </div>
+                <div class="charac-box">
+                  <label>Peso</label>
+                  <input type="text" id="char-weight" placeholder="kg" />
+                </div>
+              </div>
+            </div>
+
             <div class="panel">
               <div class="panel-header">HISTÓRIA DO PERSONAGEM</div>
               <textarea

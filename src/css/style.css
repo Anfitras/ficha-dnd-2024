@@ -1154,3 +1154,58 @@ input[type="checkbox"]:checked::before {
   background: var(--bg-card);
   color: var(--text-main);
 }
+
+.characteristics-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.2rem 1.5rem;
+}
+
+@media (max-width: 768px) {
+  .characteristics-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.charac-box {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.charac-box label {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+}
+
+.charac-box input,
+.charac-box select {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-main);
+  font-size: 0.95rem;
+  padding: 0.35rem 0;
+  border-radius: 0;
+  width: 100%;
+  transition: border-bottom-color 0.2s ease;
+}
+
+.charac-box input::placeholder {
+  color: #5e506b;
+  font-style: italic;
+}
+
+.charac-box input:focus,
+.charac-box select:focus {
+  outline: none;
+  border-bottom-color: var(--gold-primary);
+}
+
+.charac-box select option {
+  background: var(--bg-card);
+  color: var(--text-main);
+}

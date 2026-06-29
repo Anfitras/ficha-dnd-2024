@@ -741,6 +741,16 @@ const popularCampos = (d, protegerFoco) => {
   setVal("char-notes", d.notas, "");
   setVal("char-about", d.sobre, "");
 
+  const c = d.caracteristicas || {};
+  setVal("char-gender", c.genero, "");
+  setVal("char-eyes", c.olhos, "");
+  setVal("char-size", c.tamanho, "Médio");
+  setVal("char-height", c.altura, "");
+  setVal("char-hair", c.cabelo, "");
+  setVal("char-skin", c.pele, "");
+  setVal("char-age", c.idade, "");
+  setVal("char-weight", c.peso, "");
+
   atributosLista.forEach((attr) => {
     if (d.atributos?.[attr.id] !== undefined)
       setVal(`attr-${attr.id}`, d.atributos[attr.id]);
@@ -804,6 +814,16 @@ export async function carregarFicha() {
       inspiracao: false,
       notas: "",
       sobre: "",
+      caracteristicas: {
+        genero: "",
+        olhos: "",
+        tamanho: "Médio",
+        altura: "",
+        cabelo: "",
+        pele: "",
+        idade: "",
+        peso: "",
+      },
       death_saves: {},
       ataques: [],
       atributos: {
@@ -827,6 +847,7 @@ export async function carregarFicha() {
         "prof-idiomas": [],
       },
     };
+
     await supabase
       .from("personagens")
       .insert([{ slug: slug, dados: fichaInicial }]);
@@ -886,6 +907,16 @@ export async function executarSalvar() {
     inspiracao: document.getElementById("char-inspiration")?.checked || false,
     notas: document.getElementById("char-notes")?.value || "",
     sobre: document.getElementById("char-about")?.value || "",
+    caracteristicas: {
+      genero: document.getElementById("char-gender")?.value || "",
+      olhos: document.getElementById("char-eyes")?.value || "",
+      tamanho: document.getElementById("char-size")?.value || "Médio",
+      altura: document.getElementById("char-height")?.value || "",
+      cabelo: document.getElementById("char-hair")?.value || "",
+      pele: document.getElementById("char-skin")?.value || "",
+      idade: document.getElementById("char-age")?.value || "",
+      peso: document.getElementById("char-weight")?.value || "",
+    },
     death_saves: deathSavesEstado,
     ataques: normalizarListaAtaques(listaAtaques),
     atributos: atributosAtualizados,
