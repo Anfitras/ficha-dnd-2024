@@ -74,7 +74,7 @@ const condicoesDescricoes = {
   Envenenado:
     "Enquanto tem a condição Envenenado, você sofre os seguintes efeitos.<br><br><strong>Testes de Atributo e Ataques Afetados.</strong> Você tem Desvantagem em jogadas de ataque e testes de atributo.",
   Exaustão:
-    "Enquanto tem a condição Exaustão, você sofre os seguintes efeitos.<br><br><strong>Níveis de Exaustão.</strong> Essa condição é acumulativa. Cada vez que você a adquire, recebe 1 nível de Exaustão. Você morre se seu nível de Exaustão atingir 6.<br><br><strong>Testes de D20 Afetados.</strong> Ao realizar um Teste de D20, o resultado é reduzido em 2 vezes o seu nível de Exaustão.<br><br><strong>Deslocamento Reduzido.</strong> Seu Deslocamento é reduzido por uma quantidade de metros igual a 1,5 vezes o seu nível de Exaustão.<br><br><strong>Remoção de Níveis de Exaustão.</strong> Completar um Descanso Longo remove 1 dos seus níveis de Exaustão. Quando seu nível de Exaustão chega a 0 a condição encerra.",
+    "Enquanto tem a condição Exaustão, você sofre os seguintes efeitos.<br><br><strong>Níveis de Exaustão.</strong> Essa condição é acumulativa. Cada vez que você a adquire, recebe 1 nível de Exaustão. Você morre se seu nível de Exaustão atingir 6.<br><br><strong>Testes de D20 Afetados.</strong> Ao realizar um Teste de D20, o resultado é reduzido em 2 vezes o seu nível de Exaustão.<br><br><strong>Deslocamento Reduzido.</strong> Seu Deslocamento é reduced por uma quantidade de metros igual a 1,5 vezes o seu nível de Exaustão.<br><br><strong>Remoção de Níveis de Exaustão.</strong> Completar um Descanso Longo remove 1 dos seus níveis de Exaustão. Quando seu nível de Exaustão chega a 0 a condição encerra.",
   Imobilizado:
     "Enquanto tem a condição Imobilizado, você sofre os seguintes efeitos.<br><br><strong>Deslocamento 0.</strong> Seu Deslocamento é 0 e não pode aumentar.<br><br><strong>Ataques Afetados.</strong> Você tem Desvantagem em jogadas de ataque contra qualquer alvo que não seja o imobilizador.<br><br><strong>Móvel.</strong> O imobilizador pode arrastá-lo ou carregá-lo consigo, mas cada metro de movimento custa 1 metro adicional, a menos que você seja Minúsculo ou dois ou mais tamanhos menores que ele.",
   Inconsciente:
@@ -124,7 +124,22 @@ const damageTypesLista = [
   "Venenoso",
 ];
 
+const circulosNomesMap = {
+  0: "TRUQUES",
+  1: "1° CÍRCULO",
+  2: "2° CÍRCULO",
+  3: "3° CÍRCULO",
+  4: "4° CÍRCULO",
+  5: "5° CÍRCULO",
+  6: "6° CÍRCULO",
+  7: "7° CÍRCULO",
+  8: "8° CÍRCULO",
+  9: "9° CÍRCULO",
+};
+
 export let listaAtaques = [];
+export let listaMagias = [];
+
 export const listasDinamicas = {
   condicoes: [],
   "def-res": [],
@@ -139,7 +154,9 @@ export const listasDinamicas = {
 let timerSalvar = null;
 let mudancaPendente = false;
 let ataqueEmEdicaoIdx = null;
+let magiaEmEdicaoId = null;
 let modalAtkRefs = {};
+let modalSplRefs = {};
 
 export const toInt = (val) => {
   const n = parseInt(val, 10);
@@ -336,9 +353,318 @@ const abrirModalAtaque = (idx) => {
   modalAtkRefs.modal.style.display = "flex";
 };
 
+const gerenciarVisibilidadeComponentesMagia = () => {
+  if (!modalSplRefs.mChk || !modalSplRefs.mMat) return;
+  modalSplRefs.mMat.classList.toggle("visible", modalSplRefs.mChk.checked);
+};
+
+const gerenciarVisibilidadeCombateMagia = () => {
+  if (!modalSplRefs.dmgChk || !modalSplRefs.saveChk || !modalSplRefs.healChk)
+    return;
+
+  const showDmg = modalSplRefs.dmgChk.checked;
+  const showHeal = modalSplRefs.healChk.checked;
+  const showSave = modalSplRefs.saveChk.checked;
+
+  if (modalSplRefs.danoContainer)
+    modalSplRefs.danoContainer.style.display = showDmg ? "flex" : "none";
+  if (modalSplRefs.healContainer)
+    modalSplRefs.healContainer.style.display = showHeal ? "flex" : "none";
+  if (modalSplRefs.saveContainer)
+    modalSplRefs.saveContainer.style.display = showSave ? "flex" : "none";
+
+  if (modalSplRefs.combatGroup) {
+    modalSplRefs.combatGroup.style.display =
+      showDmg || showHeal || showSave ? "flex" : "none";
+  }
+};
+
+const lerValoresModalMagia = () => ({
+  id: magiaEmEdicaoId || crypto.randomUUID(),
+  nome: modalSplRefs.nome?.value.trim() || "",
+  nivel: modalSplRefs.nivel?.value || "0",
+  escola: modalSplRefs.escola?.value || "",
+  alcance: modalSplRefs.alcance?.value.trim() || "",
+  tempo: modalSplRefs.tempo?.value || "Ação",
+  atributo: modalSplRefs.atributo?.value || "",
+  alvo: modalSplRefs.alvo?.value.trim() || "",
+  duracao: modalSplRefs.duracao?.value.trim() || "",
+  aoe_size: modalSplRefs.aoeSize?.value.trim() || "",
+  aoe_shape: modalSplRefs.aoeShape?.value || "",
+  componentes: {
+    v: modalSplRefs.vChk?.checked || false,
+    s: modalSplRefs.sChk?.checked || false,
+    m: modalSplRefs.mChk?.checked
+      ? modalSplRefs.mMat?.value.trim() || "Sim"
+      : false,
+  },
+  flags: {
+    ritual: modalSplRefs.ritualChk?.checked || false,
+    concentracao: modalSplRefs.concChk?.checked || false,
+    preparada: modalSplRefs.prepChk?.checked || false,
+    dano: modalSplRefs.dmgChk?.checked || false,
+    cura: modalSplRefs.healChk?.checked || false,
+    dano_roll: modalSplRefs.dmgChk?.checked
+      ? modalSplRefs.danoRoll?.value.trim()
+      : "",
+    heal_roll: modalSplRefs.healChk?.checked
+      ? modalSplRefs.healRoll?.value.trim()
+      : "",
+  },
+  salvaguarda: modalSplRefs.saveChk?.checked
+    ? modalSplRefs.saveAttr?.value || "destreza"
+    : false,
+  desc: modalSplRefs.desc?.value.trim() || "",
+});
+
+const abrirModalMagia = (splId, circuloPreSelecionado = null) => {
+  magiaEmEdicaoId = splId;
+  if (!modalSplRefs.modal) return;
+
+  const m = listaMagias.find((item) => item.id === splId);
+
+  if (m) {
+    if (modalSplRefs.titulo) modalSplRefs.titulo.textContent = "EDITAR MAGIA";
+    if (modalSplRefs.nome) modalSplRefs.nome.value = m.nome || "";
+    if (modalSplRefs.nivel) modalSplRefs.nivel.value = m.nivel || "0";
+    if (modalSplRefs.escola) modalSplRefs.escola.value = m.escola || "";
+    if (modalSplRefs.alcance) modalSplRefs.alcance.value = m.alcance || "";
+    if (modalSplRefs.tempo) modalSplRefs.tempo.value = m.tempo || "Ação";
+    if (modalSplRefs.atributo) modalSplRefs.atributo.value = m.atributo || "";
+    if (modalSplRefs.alvo) modalSplRefs.alvo.value = m.alvo || "";
+    if (modalSplRefs.duracao) modalSplRefs.duracao.value = m.duracao || "";
+    if (modalSplRefs.aoeSize) modalSplRefs.aoeSize.value = m.aoe_size || "";
+    if (modalSplRefs.aoeShape) modalSplRefs.aoeShape.value = m.aoe_shape || "";
+
+    if (modalSplRefs.vChk) modalSplRefs.vChk.checked = !!m.componentes?.v;
+    if (modalSplRefs.sChk) modalSplRefs.sChk.checked = !!m.componentes?.s;
+    if (modalSplRefs.mChk) modalSplRefs.mChk.checked = !!m.componentes?.m;
+    if (modalSplRefs.mMat)
+      modalSplRefs.mMat.value =
+        typeof m.componentes?.m === "string" && m.componentes.m !== "Sim"
+          ? m.componentes.m
+          : "";
+
+    if (modalSplRefs.ritualChk)
+      modalSplRefs.ritualChk.checked = !!m.flags?.ritual;
+    if (modalSplRefs.concChk)
+      modalSplRefs.concChk.checked = !!m.flags?.concentracao;
+    if (modalSplRefs.prepChk)
+      modalSplRefs.prepChk.checked = !!m.flags?.preparada;
+
+    if (modalSplRefs.dmgChk)
+      modalSplRefs.dmgChk.checked =
+        !!m.flags?.dano || !!m.flags?.dano_puro || !!m.ataque;
+    if (modalSplRefs.healChk) modalSplRefs.healChk.checked = !!m.flags?.cura;
+    if (modalSplRefs.danoRoll)
+      modalSplRefs.danoRoll.value = m.flags?.dano_roll || "";
+    if (modalSplRefs.healRoll)
+      modalSplRefs.healRoll.value = m.flags?.heal_roll || "";
+
+    if (modalSplRefs.saveChk) modalSplRefs.saveChk.checked = !!m.salvaguarda;
+    if (modalSplRefs.saveAttr && m.salvaguarda)
+      modalSplRefs.saveAttr.value = m.salvaguarda;
+    if (modalSplRefs.desc) modalSplRefs.desc.value = m.desc || "";
+  } else {
+    if (modalSplRefs.titulo)
+      modalSplRefs.titulo.textContent = "ADICIONAR NOVA MAGIA";
+    if (modalSplRefs.nome) modalSplRefs.nome.value = "";
+    if (modalSplRefs.nivel)
+      modalSplRefs.nivel.value =
+        circuloPreSelecionado !== null ? `${circuloPreSelecionado}` : "0";
+    if (modalSplRefs.escola) modalSplRefs.escola.value = "";
+    if (modalSplRefs.alcance) modalSplRefs.alcance.value = "";
+    if (modalSplRefs.tempo) modalSplRefs.tempo.value = "Ação";
+    if (modalSplRefs.atributo) modalSplRefs.atributo.value = "";
+    if (modalSplRefs.alvo) modalSplRefs.alvo.value = "";
+    if (modalSplRefs.duracao) modalSplRefs.duracao.value = "";
+    if (modalSplRefs.aoeSize) modalSplRefs.aoeSize.value = "";
+    if (modalSplRefs.aoeShape) modalSplRefs.aoeShape.value = "";
+
+    if (modalSplRefs.vChk) modalSplRefs.vChk.checked = false;
+    if (modalSplRefs.sChk) modalSplRefs.sChk.checked = false;
+    if (modalSplRefs.mChk) modalSplRefs.mChk.checked = false;
+    if (modalSplRefs.mMat) modalSplRefs.mMat.value = "";
+
+    if (modalSplRefs.ritualChk) modalSplRefs.ritualChk.checked = false;
+    if (modalSplRefs.concChk) modalSplRefs.concChk.checked = false;
+    if (modalSplRefs.prepChk) modalSplRefs.prepChk.checked = false;
+
+    if (modalSplRefs.dmgChk) modalSplRefs.dmgChk.checked = false;
+    if (modalSplRefs.healChk) modalSplRefs.healChk.checked = false;
+    if (modalSplRefs.danoRoll) modalSplRefs.danoRoll.value = "";
+    if (modalSplRefs.healRoll) modalSplRefs.healRoll.value = "";
+
+    if (modalSplRefs.saveChk) modalSplRefs.saveChk.checked = false;
+    if (modalSplRefs.saveAttr) modalSplRefs.saveAttr.value = "destreza";
+    if (modalSplRefs.desc) modalSplRefs.desc.value = "";
+  }
+
+  gerenciarVisibilidadeComponentesMagia();
+  gerenciarVisibilidadeCombateMagia();
+  modalSplRefs.modal.style.display = "flex";
+};
+
+export function renderizarMagias() {
+  const container = document.getElementById("spells-container");
+  if (!container) return;
+  container.innerHTML = "";
+
+  const grupos = {};
+  for (let i = 0; i <= 9; i++) {
+    grupos[i] = [];
+  }
+
+  listaMagias.forEach((m) => {
+    const niv = toInt(m.nivel);
+    if (grupos[niv]) grupos[niv].push(m);
+  });
+
+  Object.keys(grupos).forEach((nivKey) => {
+    const magiasDoCirculo = grupos[nivKey];
+    if (!magiasDoCirculo || magiasDoCirculo.length === 0) return;
+
+    magiasDoCirculo.sort((a, b) =>
+      (a.nome || "").localeCompare(b.nome || "", "pt-BR"),
+    );
+
+    const sec = document.createElement("div");
+    sec.className = "spell-level-section";
+
+    const header = document.createElement("div");
+    header.className = "spell-level-header";
+    header.innerHTML = `
+      <span class="spell-level-title"> ${circulosNomesMap[nivKey]}</span>
+      <button type="button" class="spell-add-placeholder" aria-label="Adicionar magia" data-add-spell="${nivKey}">+</button>
+    `;
+    sec.appendChild(header);
+
+    magiasDoCirculo.forEach((mg, mIdx) => {
+      const rowWrap = document.createElement("div");
+      rowWrap.className = "spell-row-wrapper";
+
+      const uid = `spell-drawer-${nivKey}-${mIdx}`;
+      const mainRow = document.createElement("div");
+      mainRow.className = "spell-main-row";
+
+      const badges = [];
+      if (mg.flags?.concentracao)
+        badges.push('<span class="spell-tag-badge conc">C</span>');
+      if (mg.flags?.ritual)
+        badges.push('<span class="spell-tag-badge ritual">R</span>');
+
+      mainRow.innerHTML = `
+        <div class="spell-name-side">
+          <span class="spell-icon"></span>
+          <span class="spell-title-txt">${mg.nome || "Magia Sem Nome"}</span>
+          ${badges.join(" ")}
+        </div>
+        <div class="spell-actions-side">
+          <button type="button" class="action-icon" aria-label="Editar magia" data-edit-spell="${mg.id}">✏️</button>
+          <span class="tag-remove" role="button" aria-label="Excluir magia" data-del-spell="${mg.id}">×</span>
+          <button type="button" class="spell-drawer-toggle" aria-label="Expandir detalhes" aria-expanded="false" aria-controls="${uid}">▼</button>
+        </div>
+      `;
+
+      const drawer = document.createElement("div");
+      drawer.id = uid;
+      drawer.className = "spell-detail-drawer";
+
+      const compList = [];
+      if (mg.componentes?.v) compList.push("V");
+      if (mg.componentes?.s) compList.push("S");
+      if (mg.componentes?.m) compList.push(`M (${mg.componentes.m})`);
+      const compStr = compList.join(", ");
+
+      const props = [
+        mg.tempo
+          ? `<div class="spell-prop"><label>Tempo</label><span>${mg.tempo}</span></div>`
+          : "",
+        mg.alcance
+          ? `<div class="spell-prop"><label>Alcance</label><span>${mg.alcance}</span></div>`
+          : "",
+        mg.duracao
+          ? `<div class="spell-prop"><label>Duração</label><span>${mg.duracao}</span></div>`
+          : "",
+        mg.alvo
+          ? `<div class="spell-prop"><label>Alvo</label><span>${mg.alvo}</span></div>`
+          : "",
+        mg.atributo
+          ? `<div class="spell-prop"><label>Atributo</label><span>${mg.atributo.toUpperCase()}</span></div>`
+          : "",
+        mg.escola
+          ? `<div class="spell-prop"><label>Escola</label><span>${mg.escola}</span></div>`
+          : "",
+        mg.aoe_size
+          ? `<div class="spell-prop"><label>Área (Tamanho)</label><span>${mg.aoe_size}</span></div>`
+          : "",
+        mg.aoe_shape
+          ? `<div class="spell-prop"><label>Área (Forma)</label><span>${mg.aoe_shape}</span></div>`
+          : "",
+        compStr
+          ? `<div class="spell-prop"><label>Componentes</label><span>${compStr}</span></div>`
+          : "",
+        mg.salvaguarda
+          ? `<div class="spell-prop"><label>Salvaguarda</label><span>${mg.salvaguarda.toUpperCase()}</span></div>`
+          : "",
+        mg.flags?.dano_roll
+          ? `<div class="spell-prop"><label>Dano</label><span>${mg.flags.dano_roll}</span></div>`
+          : "",
+        mg.flags?.heal_roll
+          ? `<div class="spell-prop"><label>Cura</label><span>${mg.flags.heal_roll}</span></div>`
+          : "",
+      ];
+
+      drawer.innerHTML = props.filter(Boolean).join("");
+      if (mg.desc) {
+        drawer.innerHTML += `<div class="spell-prop full-desc"><label>Descrição</label><span>${mg.desc}</span></div>`;
+      }
+
+      const toggleBtn = mainRow.querySelector(".spell-drawer-toggle");
+      mainRow.addEventListener("click", (e) => {
+        if (
+          e.target.closest("[data-edit-spell]") ||
+          e.target.closest("[data-del-spell]")
+        )
+          return;
+        const isOpen = drawer.classList.toggle("open");
+        toggleBtn.classList.toggle("expanded", isOpen);
+        toggleBtn.setAttribute("aria-expanded", isOpen);
+      });
+
+      rowWrap.appendChild(mainRow);
+      rowWrap.appendChild(drawer);
+      sec.appendChild(rowWrap);
+    });
+
+    container.appendChild(sec);
+  });
+
+  container.querySelectorAll("[data-add-spell]").forEach((btn) => {
+    btn.onclick = (e) => {
+      abrirModalMagia(null, toInt(e.currentTarget.dataset.addSpell));
+    };
+  });
+
+  container.querySelectorAll("[data-edit-spell]").forEach((btn) => {
+    btn.onclick = (e) => {
+      abrirModalMagia(e.currentTarget.dataset.editSpell);
+    };
+  });
+
+  container.querySelectorAll("[data-del-spell]").forEach((btn) => {
+    btn.onclick = (e) => {
+      const idAlvo = e.currentTarget.dataset.delSpell;
+      listaMagias = listaMagias.filter((mg) => mg.id !== idAlvo);
+      renderizarMagias();
+      mudancaPendente = true;
+      dispararSalvoImediato();
+    };
+  });
+}
+
 export function montarEstruturaEstatica() {
-  const gridAttr = document.getElementById("attributes-grid");
-  const gridSaves = document.getElementById("saves-grid");
+  const uGridAttr = document.getElementById("universal-attrs-grid");
   const skillsContainer = document.getElementById("skills-list");
   const headerSkills = document.querySelector(".skills-table-header");
 
@@ -346,28 +672,49 @@ export function montarEstruturaEstatica() {
     headerSkills.innerHTML = `<span>PERÍCIA</span><span></span><span>TOTAL</span><span>PROF</span>`;
   }
 
-  atributosLista.forEach((attr) => {
-    if (gridAttr) {
-      const cardA = document.createElement("div");
-      cardA.className = "attr-box";
-      cardA.innerHTML = `
-        <span class="attr-label">${attr.nome}</span>
-        <input type="number" id="attr-${attr.id}" value="10" />
-        <span class="attr-mod" id="mod-${attr.id}">+0</span>
+  if (uGridAttr) {
+    atributosLista.forEach((attr) => {
+      const sigla = attr.nome.slice(0, 3).toUpperCase();
+      const card = document.createElement("div");
+      card.className = "u-attr-card";
+      card.innerHTML = `
+        <div class="u-attr-top">
+          <span class="u-attr-label">${sigla}</span>
+          <input type="number" id="attr-${attr.id}" value="10" class="u-attr-input" />
+        </div>
+        <div class="u-attr-bottom">
+          <div class="u-stat-unit">
+            <div class="u-mod-box">
+              <span id="mod-${attr.id}">+0</span>
+            </div>
+            <span class="u-sub-label">Mod</span>
+          </div>
+          <div class="u-stat-unit">
+            <div id="save-box-${attr.id}" class="u-save-box" data-prof="false">
+              <span id="save-val-${attr.id}">+0</span>
+              <span class="u-dot-wrapper">
+                <button type="button" id="save-prof-${attr.id}" class="skill-dot u-save-dot" data-state="0" aria-label="Salvaguarda de ${attr.nome}"></button>
+              </span>
+            </div>
+            <span class="u-sub-label">Save</span>
+          </div>
+        </div>
       `;
-      gridAttr.appendChild(cardA);
-    }
-    if (gridSaves) {
-      const cardS = document.createElement("div");
-      cardS.className = "save-box";
-      cardS.innerHTML = `
-        <input type="checkbox" id="save-prof-${attr.id}" />
-        <span>${attr.nome.slice(0, 3).toUpperCase()}</span>
-        <span id="save-val-${attr.id}">+0</span>
-      `;
-      gridSaves.appendChild(cardS);
-    }
-  });
+      uGridAttr.appendChild(card);
+    });
+
+    uGridAttr.querySelectorAll(".u-save-dot").forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        const atual = toInt(e.currentTarget.getAttribute("data-state"));
+        const proximo = (atual + 1) % 3;
+        e.currentTarget.setAttribute("data-state", proximo);
+        e.currentTarget.value = proximo;
+        recalcularTudo();
+        mudancaPendente = true;
+        dispararSalvoImediato();
+      });
+    });
+  }
 
   if (skillsContainer) {
     periciasLista.forEach((p) => {
@@ -432,6 +779,39 @@ export function montarEstruturaEstatica() {
     desc: document.getElementById("atk-inp-desc"),
   };
 
+  modalSplRefs = {
+    modal: document.getElementById("spell-modal"),
+    titulo: document.getElementById("spell-modal-title"),
+    nome: document.getElementById("spl-inp-nome"),
+    nivel: document.getElementById("spl-inp-nivel"),
+    escola: document.getElementById("spl-inp-escola"),
+    alcance: document.getElementById("spl-inp-alcance"),
+    tempo: document.getElementById("spl-inp-tempo"),
+    atributo: document.getElementById("spl-inp-atributo"),
+    alvo: document.getElementById("spl-inp-alvo"),
+    duracao: document.getElementById("spl-inp-duracao"),
+    aoeSize: document.getElementById("spl-inp-aoe-size"),
+    aoeShape: document.getElementById("spl-inp-aoe-shape"),
+    vChk: document.getElementById("spl-chk-v"),
+    sChk: document.getElementById("spl-chk-s"),
+    mChk: document.getElementById("spl-chk-m"),
+    mMat: document.getElementById("spl-inp-m-mat"),
+    ritualChk: document.getElementById("spl-chk-ritual"),
+    concChk: document.getElementById("spl-chk-conc"),
+    prepChk: document.getElementById("spl-chk-prep"),
+    dmgChk: document.getElementById("spl-chk-dano"),
+    healChk: document.getElementById("spl-chk-heal"),
+    saveChk: document.getElementById("spl-chk-save"),
+    combatGroup: document.getElementById("spl-combat-details-group"),
+    danoContainer: document.getElementById("spl-dano-container"),
+    healContainer: document.getElementById("spl-heal-container"),
+    saveContainer: document.getElementById("spl-save-attr-container"),
+    danoRoll: document.getElementById("spl-inp-dano-roll"),
+    healRoll: document.getElementById("spl-inp-heal-roll"),
+    saveAttr: document.getElementById("spl-inp-save-attr"),
+    desc: document.getElementById("spl-inp-desc"),
+  };
+
   if (modalAtkRefs.danoTipo) {
     modalAtkRefs.danoTipo.innerHTML =
       `<option value="">—</option>` +
@@ -467,6 +847,14 @@ export function montarEstruturaEstatica() {
     btnAddAtk.onclick = (e) => {
       e.preventDefault();
       abrirModalAtaque(null);
+    };
+  }
+
+  const btnAddSpl = document.getElementById("add-spell-btn");
+  if (btnAddSpl) {
+    btnAddSpl.onclick = (e) => {
+      e.preventDefault();
+      abrirModalMagia(null);
     };
   }
 
@@ -517,6 +905,56 @@ export function montarEstruturaEstatica() {
       modalAtkRefs.modal.style.display = "none";
       ataqueEmEdicaoIdx = null;
       renderizarAtaques();
+      mudancaPendente = true;
+      dispararSalvoImediato();
+    };
+  }
+
+  const closeSpl = document.getElementById("spell-modal-close");
+  const saveSplBtn = document.getElementById("spl-btn-save");
+
+  if (modalSplRefs.mChk)
+    modalSplRefs.mChk.addEventListener(
+      "change",
+      gerenciarVisibilidadeComponentesMagia,
+    );
+  if (modalSplRefs.dmgChk)
+    modalSplRefs.dmgChk.addEventListener(
+      "change",
+      gerenciarVisibilidadeCombateMagia,
+    );
+  if (modalSplRefs.healChk)
+    modalSplRefs.healChk.addEventListener(
+      "change",
+      gerenciarVisibilidadeCombateMagia,
+    );
+  if (modalSplRefs.saveChk)
+    modalSplRefs.saveChk.addEventListener(
+      "change",
+      gerenciarVisibilidadeCombateMagia,
+    );
+
+  if (closeSpl && modalSplRefs.modal) {
+    closeSpl.onclick = () => {
+      modalSplRefs.modal.style.display = "none";
+      magiaEmEdicaoId = null;
+    };
+  }
+
+  if (saveSplBtn && modalSplRefs.modal) {
+    saveSplBtn.onclick = () => {
+      const novaMg = lerValoresModalMagia();
+      const idxExistente = listaMagias.findIndex((mg) => mg.id === novaMg.id);
+
+      if (idxExistente === -1) {
+        listaMagias.push(novaMg);
+      } else {
+        listaMagias[idxExistente] = novaMg;
+      }
+
+      modalSplRefs.modal.style.display = "none";
+      magiaEmEdicaoId = null;
+      renderizarMagias();
       mudancaPendente = true;
       dispararSalvoImediato();
     };
@@ -683,10 +1121,15 @@ export const recalcularTudo = () => {
     const modEl = document.getElementById(`mod-${attr.id}`);
     if (modEl) modEl.textContent = formatMod(mod);
 
-    const isProfSave = document.getElementById(`save-prof-${attr.id}`)?.checked;
-    const saveTotal = mod + (isProfSave ? profBonus : 0);
+    const dotSave = document.getElementById(`save-prof-${attr.id}`);
+    const saveMult = toInt(dotSave?.getAttribute("data-state"));
+    const saveTotal = mod + saveMult * profBonus;
     const saveEl = document.getElementById(`save-val-${attr.id}`);
     if (saveEl) saveEl.textContent = formatMod(saveTotal);
+
+    const boxSave = document.getElementById(`save-box-${attr.id}`);
+    if (boxSave)
+      boxSave.setAttribute("data-prof", saveMult > 0 ? "true" : "false");
   });
 
   periciasLista.forEach((p) => {
@@ -702,7 +1145,19 @@ export const recalcularTudo = () => {
     }
   });
 
+  const spellAttrSel = document.getElementById("char-spell-attr");
+  const attrKey = spellAttrSel ? spellAttrSel.value : "inteligencia";
+  const spellAttrVal = toInt(document.getElementById(`attr-${attrKey}`)?.value);
+  const spellMod = Math.floor((spellAttrVal - 10) / 2);
+
+  const elDC = document.getElementById("spell-dc-val");
+  const elAtk = document.getElementById("spell-atk-val");
+  if (elDC) elDC.textContent = 8 + profBonus + spellMod;
+  if (elAtk) elAtk.textContent = formatMod(profBonus + spellMod);
+
+  listaAtaques = normalizarListaAtaques(listaAtaques);
   renderizarAtaques();
+  renderizarMagias();
   atualizarPreviewAtaque();
 };
 
@@ -732,14 +1187,7 @@ const popularCampos = (d, protegerFoco) => {
   setVal("char-hp-temp", d.hp_temp, 0);
   setVal("char-hd-atual", d.hd_atual, d.nivel || 1);
   setVal("char-hd-type", d.hd_type, "1d8");
-
-  const inspEl = document.getElementById("char-inspiration");
-  if (inspEl && !(protegerFoco && document.activeElement === inspEl)) {
-    inspEl.checked = !!d.inspiracao;
-  }
-
-  setVal("char-notes", d.notas, "");
-  setVal("char-about", d.sobre, "");
+  setVal("char-spell-attr", d.spell_attr, "inteligencia");
 
   const c = d.caracteristicas || {};
   setVal("char-gender", c.genero, "");
@@ -751,11 +1199,28 @@ const popularCampos = (d, protegerFoco) => {
   setVal("char-age", c.idade, "");
   setVal("char-weight", c.peso, "");
 
+  const inspEl = document.getElementById("char-inspiration");
+  if (inspEl && !(protegerFoco && document.activeElement === inspEl)) {
+    inspEl.checked = !!d.inspiracao;
+  }
+
+  setVal("char-notes", d.notas, "");
+  setVal("char-about", d.sobre, "");
+
   atributosLista.forEach((attr) => {
     if (d.atributos?.[attr.id] !== undefined)
       setVal(`attr-${attr.id}`, d.atributos[attr.id]);
-    if (d.saves?.[attr.id] !== undefined)
-      setVal(`save-prof-${attr.id}`, d.saves[attr.id]);
+    if (d.saves?.[attr.id] !== undefined) {
+      let val = d.saves[attr.id];
+      if (val === true) val = 1;
+      if (val === false) val = 0;
+      val = toInt(val);
+      const el = document.getElementById(`save-prof-${attr.id}`);
+      if (el && !(protegerFoco && document.activeElement === el)) {
+        el.setAttribute("data-state", val);
+        el.value = val;
+      }
+    }
   });
 
   periciasLista.forEach((p) => {
@@ -784,6 +1249,7 @@ const popularCampos = (d, protegerFoco) => {
   }
 
   listaAtaques = normalizarListaAtaques(d.ataques || []);
+  listaMagias = d.magias || [];
   recalcularTudo();
 };
 
@@ -811,6 +1277,7 @@ export async function carregarFicha() {
       hp_temp: 0,
       hd_atual: 1,
       hd_type: "1d8",
+      spell_attr: "inteligencia",
       inspiracao: false,
       notas: "",
       sobre: "",
@@ -826,6 +1293,7 @@ export async function carregarFicha() {
       },
       death_saves: {},
       ataques: [],
+      magias: [],
       atributos: {
         forca: 10,
         destreza: 10,
@@ -847,7 +1315,6 @@ export async function carregarFicha() {
         "prof-idiomas": [],
       },
     };
-
     await supabase
       .from("personagens")
       .insert([{ slug: slug, dados: fichaInicial }]);
@@ -870,7 +1337,7 @@ export async function executarSalvar() {
     const elSave = document.getElementById(`save-prof-${attr.id}`);
     const elAttr = document.getElementById(`attr-${attr.id}`);
     if (elSave && elAttr) {
-      savesEstado[attr.id] = elSave.checked;
+      savesEstado[attr.id] = toInt(elSave.getAttribute("data-state"));
       atributosAtualizados[attr.id] = toInt(elAttr.value);
     }
   });
@@ -904,6 +1371,8 @@ export async function executarSalvar() {
     hp_temp: toInt(document.getElementById("char-hp-temp")?.value),
     hd_atual: toInt(document.getElementById("char-hd-atual")?.value),
     hd_type: document.getElementById("char-hd-type")?.value || "1d8",
+    spell_attr:
+      document.getElementById("char-spell-attr")?.value || "inteligencia",
     inspiracao: document.getElementById("char-inspiration")?.checked || false,
     notas: document.getElementById("char-notes")?.value || "",
     sobre: document.getElementById("char-about")?.value || "",
@@ -919,6 +1388,7 @@ export async function executarSalvar() {
     },
     death_saves: deathSavesEstado,
     ataques: normalizarListaAtaques(listaAtaques),
+    magias: listaMagias,
     atributos: atributosAtualizados,
     saves: savesEstado,
     skills: { prof: periciasProf },

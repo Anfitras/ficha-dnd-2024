@@ -134,6 +134,219 @@
         </button>
       </div>
     </div>
+
+    <div id="spell-modal" class="pin-overlay">
+      <div class="attack-box roll20-style-modal">
+        <div class="mastery-header">
+          <h2 id="spell-modal-title">ADICIONAR NOVA MAGIA</h2>
+          <span
+            id="spell-modal-close"
+            class="tag-remove"
+            role="button"
+            aria-label="Fechar janela de magia"
+            >×</span
+          >
+        </div>
+
+        <div class="r20-spell-form">
+          <div class="r20-row">
+            <div class="r20-group r20-span-2">
+              <label>NOME</label>
+              <input type="text" id="spl-inp-nome" placeholder="Nova Magia" />
+            </div>
+            <div class="r20-group">
+              <label>CÍRCULO</label>
+              <select id="spl-inp-nivel">
+                <option value="0">Truque</option>
+                <option value="1">1° Círculo</option>
+                <option value="2">2° Círculo</option>
+                <option value="3">3° Círculo</option>
+                <option value="4">4° Círculo</option>
+                <option value="5">5° Círculo</option>
+                <option value="6">6° Círculo</option>
+                <option value="7">7° Círculo</option>
+                <option value="8">8° Círculo</option>
+                <option value="9">9° Círculo</option>
+              </select>
+            </div>
+            <div class="r20-group">
+              <label>ESCOLA</label>
+              <select id="spl-inp-escola">
+                <option value="">(Nenhuma)</option>
+                <option value="Abjuração">Abjuração</option>
+                <option value="Adivinhação">Adivinhação</option>
+                <option value="Conjuração">Conjuração</option>
+                <option value="Encantamento">Encantamento</option>
+                <option value="Evocação">Evocação</option>
+                <option value="Ilusão">Ilusão</option>
+                <option value="Necromancia">Necromancia</option>
+                <option value="Transmutação">Transmutação</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="r20-row">
+            <div class="r20-group">
+              <label>ALCANCE</label>
+              <input type="text" id="spl-inp-alcance" placeholder="ex: 27m" />
+            </div>
+            <div class="r20-group">
+              <label>TEMPO DE CONJURAÇÃO</label>
+              <select id="spl-inp-tempo">
+                <option value="Ação">Ação</option>
+                <option value="Ação Bônus">Ação Bônus</option>
+                <option value="Reação">Reação</option>
+                <option value="Ação Livre">Ação Livre</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="r20-row">
+            <div class="r20-group">
+              <label>ATRIBUTO CONJURADOR</label>
+              <select id="spl-inp-atributo">
+                <option value="">(Padrão da Ficha)</option>
+                <option value="inteligencia">Inteligência</option>
+                <option value="sabedoria">Sabedoria</option>
+                <option value="carisma">Carisma</option>
+              </select>
+            </div>
+            <div class="r20-group">
+              <label>ALVO</label>
+              <input
+                type="text"
+                id="spl-inp-alvo"
+                placeholder="ex: 1 Criatura"
+              />
+            </div>
+          </div>
+
+          <div class="r20-row">
+            <div class="r20-group">
+              <label>DURAÇÃO</label>
+              <input
+                type="text"
+                id="spl-inp-duracao"
+                placeholder="ex: Instantânea"
+              />
+            </div>
+            <div class="r20-group">
+              <label>TAMANHO DA ÁREA</label>
+              <input type="text" id="spl-inp-aoe-size" placeholder="ex: 6m" />
+            </div>
+            <div class="r20-group">
+              <label>FORMA DA ÁREA</label>
+              <select id="spl-inp-aoe-shape">
+                <option value="">(Nenhuma)</option>
+                <option value="Esfera">Esfera</option>
+                <option value="Cone">Cone</option>
+                <option value="Cilindro">Cilindro</option>
+                <option value="Linha">Linha</option>
+                <option value="Cubo">Cubo</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="r20-row r20-checks-row">
+            <label class="check-inline"
+              ><input type="checkbox" id="spl-chk-v" /> V</label
+            >
+            <label class="check-inline"
+              ><input type="checkbox" id="spl-chk-s" /> S</label
+            >
+            <label class="check-inline"
+              ><input type="checkbox" id="spl-chk-m" /> M</label
+            >
+            <input
+              type="text"
+              id="spl-inp-m-mat"
+              class="material-input"
+              placeholder="Componentes materiais..."
+            />
+
+            <span class="r20-spacer"></span>
+
+            <label class="check-inline"
+              ><input type="checkbox" id="spl-chk-ritual" /> Ritual</label
+            >
+            <label class="check-inline"
+              ><input type="checkbox" id="spl-chk-conc" /> Concentração</label
+            >
+            <label class="check-inline"
+              ><input type="checkbox" id="spl-chk-prep" /> Sempre
+              Preparada</label
+            >
+          </div>
+
+          <div class="r20-row r20-checks-row r20-combat-row">
+            <label class="check-inline"
+              ><input type="checkbox" id="spl-chk-dano" /> Dano</label
+            >
+            <label class="check-inline"
+              ><input type="checkbox" id="spl-chk-heal" /> Cura</label
+            >
+            <label class="check-inline"
+              ><input type="checkbox" id="spl-chk-save" /> Tem
+              Salvaguarda</label
+            >
+          </div>
+
+          <div id="spl-combat-details-group" class="r20-combat-subfields">
+            <div
+              id="spl-dano-container"
+              class="r20-group"
+              style="display: none"
+            >
+              <label>DANO (ex: 8d6)</label>
+              <input type="text" id="spl-inp-dano-roll" placeholder="Rolagem" />
+            </div>
+            <div
+              id="spl-heal-container"
+              class="r20-group"
+              style="display: none"
+            >
+              <label>CURA (ex: 1d4+4)</label>
+              <input type="text" id="spl-inp-heal-roll" placeholder="Rolagem" />
+            </div>
+            <div
+              id="spl-save-attr-container"
+              class="r20-group"
+              style="display: none"
+            >
+              <label>ATRIBUTO DA SALVAGUARDA</label>
+              <select id="spl-inp-save-attr">
+                <option value="destreza">Destreza</option>
+                <option value="constituicao">Constituição</option>
+                <option value="sabedoria">Sabedoria</option>
+                <option value="forca">Força</option>
+                <option value="inteligencia">Inteligência</option>
+                <option value="carisma">Carisma</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="r20-row" style="border-bottom: none">
+            <div class="r20-group">
+              <label>DESCRIÇÃO</label>
+              <textarea
+                id="spl-inp-desc"
+                rows="4"
+                placeholder="Regras, efeitos e notas adicionais..."
+              ></textarea>
+            </div>
+          </div>
+        </div>
+        <button
+          type="button"
+          id="spl-btn-save"
+          class="btn-primary-gold"
+          style="margin-top: 1rem"
+        >
+          CONCLUÍDO
+        </button>
+      </div>
+    </div>
+
     <div id="app" class="sheet-wrapper">
       <header class="sheet-topbar">
         <div class="hero-name-container">
@@ -244,6 +457,9 @@
         </aside>
 
         <main class="column-center">
+          <div class="universal-attrs-panel">
+            <div id="universal-attrs-grid" class="universal-attrs-grid"></div>
+          </div>
           <nav class="tabs-nav">
             <button class="tab-btn active" data-target="tab-combat">
               COMBATE
@@ -258,16 +474,6 @@
           </nav>
 
           <div id="tab-combat" class="tab-content active">
-            <div class="panel">
-              <div class="panel-header">ATRIBUTOS</div>
-              <div id="attributes-grid" class="attributes-grid"></div>
-            </div>
-
-            <div class="panel">
-              <div class="panel-header">TESTES DE SALVAGUARDA</div>
-              <div id="saves-grid" class="saves-grid"></div>
-            </div>
-
             <div class="panel">
               <div class="panel-header">ATAQUES & CONJURAÇÃO</div>
               <div class="table-responsive">
@@ -296,12 +502,33 @@
           </div>
 
           <div id="tab-spells" class="tab-content">
-            <div class="panel">
-              <div class="panel-header">CONJURAÇÃO</div>
-              <p class="placeholder-txt">
-                Painel de magias pronto para expansão.
-              </p>
+            <div class="spells-topbar">
+              <div class="spell-stat-box">
+                <span id="spell-dc-val">10</span>
+                <label>CD DE MAGIA</label>
+              </div>
+              <div class="spell-stat-box">
+                <span id="spell-atk-val">+0</span>
+                <label>BÔNUS DE ATAQUE</label>
+              </div>
+              <div class="spell-stat-box">
+                <select id="char-spell-attr" class="spell-attr-select">
+                  <option value="inteligencia">Inteligência (INT)</option>
+                  <option value="sabedoria">Sabedoria (SAB)</option>
+                  <option value="carisma">Carisma (CAR)</option>
+                </select>
+                <label>ATRIBUTO CONJURADOR</label>
+              </div>
             </div>
+            <button
+              type="button"
+              id="add-spell-btn"
+              class="add-action-btn"
+              style="margin-bottom: 1.5rem"
+            >
+              + ADICIONAR NOVA MAGIA
+            </button>
+            <div id="spells-container" class="spells-container"></div>
           </div>
           <div id="tab-inventory" class="tab-content">
             <div class="panel">
