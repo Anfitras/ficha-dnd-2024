@@ -229,12 +229,14 @@ export const renderizarAtaques = () => {
 
   tbody.querySelectorAll("[data-del-atk]").forEach((btn) => {
     btn.onclick = (e) => {
-      estado.listaAtaques.splice(
-        parseInt(e.currentTarget.dataset.delAtk, 10),
-        1,
-      );
-      renderizarAtaques();
-      window.dispatchEvent(new CustomEvent("save-immediate"));
+      if (window.confirm("Tem certeza que deseja excluir este ataque?")) {
+        estado.listaAtaques.splice(
+          parseInt(e.currentTarget.dataset.delAtk, 10),
+          1,
+        );
+        renderizarAtaques();
+        window.dispatchEvent(new CustomEvent("save-immediate"));
+      }
     };
   });
 };

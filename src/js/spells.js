@@ -298,10 +298,14 @@ export function renderizarMagias() {
   });
   container.querySelectorAll("[data-del-spell]").forEach((btn) => {
     btn.onclick = (e) => {
-      const idAlvo = e.currentTarget.dataset.delSpell;
-      estado.listaMagias = estado.listaMagias.filter((mg) => mg.id !== idAlvo);
-      renderizarMagias();
-      window.dispatchEvent(new CustomEvent("save-immediate"));
+      if (window.confirm("Tem certeza que deseja excluir esta magia?")) {
+        const idAlvo = e.currentTarget.dataset.delSpell;
+        estado.listaMagias = estado.listaMagias.filter(
+          (mg) => mg.id !== idAlvo,
+        );
+        renderizarMagias();
+        window.dispatchEvent(new CustomEvent("save-immediate"));
+      }
     };
   });
 }

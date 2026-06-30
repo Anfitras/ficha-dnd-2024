@@ -134,3 +134,11 @@ export const circulosNomesMap = {
   8: "8° CÍRCULO",
   9: "9° CÍRCULO",
 };
+
+export const tiposItemLista = [
+  "Arma",
+  "Armadura",
+  "Escudo",
+  "Ferramenta",
+  "Equipamento de Aventura",
+];

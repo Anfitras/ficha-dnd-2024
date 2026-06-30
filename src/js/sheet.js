@@ -23,6 +23,12 @@ import {
   lerValoresModalMagia,
 } from "./spells.js";
 import {
+  renderizarInventario,
+  abrirModalItem,
+  lerValoresModalItem,
+  gerenciarVisibilidadeCamposItem,
+} from "./inventory.js";
+import {
   carregarFicha,
   dispararSalvoImediato,
   agendarSalvoSilencioso,
@@ -118,6 +124,57 @@ export const recalcularTudo = () => {
   const desMod = Math.floor((desVal - 10) / 2);
   const initEl = document.getElementById("char-init-val");
   if (initEl) initEl.textContent = formatMod(desMod);
+
+  const forVal = toInt(document.getElementById("attr-forca")?.value);
+  const capMax = forVal * 15;
+  let pesoTotal = 0;
+  estado.listaInventario.forEach((item) => {
+    pesoTotal += (parseFloat(item.peso) || 0) * (toInt(item.quantidade) || 1);
+  });
+  const weightEl = document.getElementById("inv-weight-total");
+  const weightMaxEl = document.getElementById("inv-weight-max");
+  const weightBar = document.getElementById("inv-weight-fill");
+  if (weightEl) weightEl.textContent = pesoTotal.toFixed(1);
+  if (weightMaxEl) weightMaxEl.textContent = capMax;
+  if (weightBar) {
+    let pct = capMax > 0 ? (pesoTotal / capMax) * 100 : 0;
+    pct = Math.max(0, Math.min(100, pct));
+    weightBar.style.width = `${pct}%`;
+    weightBar.style.backgroundColor =
+      pct > 100 ? "#ff3b3b" : pct > 75 ? "#ffaa00" : "#00cc66";
+  }
+
+  let acBase = 10;
+  let usaDes = true;
+  let capDes = Infinity;
+  let bonusEscudo = 0;
+  const armaduraEquipada = estado.listaInventario.find(
+    (i) => i.tipo === "Armadura" && i.equipado,
+  );
+  const escudoEquipado = estado.listaInventario.find(
+    (i) => i.tipo === "Escudo" && i.equipado,
+  );
+
+  if (armaduraEquipada) {
+    acBase = toInt(armaduraEquipada.caBase) || 10;
+    usaDes = armaduraEquipada.somaDes;
+    capDes =
+      armaduraEquipada.bonusCap !== ""
+        ? toInt(armaduraEquipada.bonusCap)
+        : Infinity;
+  }
+  if (escudoEquipado) {
+    bonusEscudo = toInt(escudoEquipado.caBonus);
+  }
+  let acTotal = acBase + bonusEscudo;
+  if (usaDes) {
+    acTotal += Math.min(desMod, capDes);
+  }
+  const acInput = document.getElementById("char-ac");
+  if (acInput && document.activeElement !== acInput) {
+    acInput.value = acTotal;
+  }
+
   atributosLista.forEach((attr) => {
     const val = toInt(document.getElementById(`attr-${attr.id}`)?.value);
     const mod = Math.floor((val - 10) / 2);
@@ -155,6 +212,7 @@ export const recalcularTudo = () => {
   estado.listaAtaques = normalizarListaAtaques(estado.listaAtaques);
   renderizarAtaques();
   renderizarMagias();
+  renderizarInventario();
   atualizarPreviewAtaque();
 };
 
@@ -252,6 +310,23 @@ export function montarEstruturaEstatica() {
       e.target.value = "";
     });
   }
+  estado.modalItemRefs = {
+    modal: document.getElementById("item-modal"),
+    titulo: document.getElementById("item-modal-title"),
+    nome: document.getElementById("itm-inp-nome"),
+    tipo: document.getElementById("itm-inp-tipo"),
+    qtd: document.getElementById("itm-inp-qtd"),
+    peso: document.getElementById("itm-inp-peso"),
+    desc: document.getElementById("itm-inp-desc"),
+    armorGroup: document.getElementById("itm-armor-group"),
+    caBase: document.getElementById("itm-inp-ca-base"),
+    forMin: document.getElementById("itm-inp-for-min"),
+    desChk: document.getElementById("itm-chk-des"),
+    cap: document.getElementById("itm-inp-cap"),
+    stealthChk: document.getElementById("itm-chk-stealth"),
+    shieldGroup: document.getElementById("itm-shield-group"),
+    caBonus: document.getElementById("itm-inp-ca-bonus"),
+  };
   estado.modalAtkRefs = {
     modal: document.getElementById("attack-modal"),
     titulo: document.getElementById("attack-modal-title"),
@@ -337,6 +412,13 @@ export function montarEstruturaEstatica() {
     btnAddSpl.onclick = (e) => {
       e.preventDefault();
       abrirModalMagia(null);
+    };
+  }
+  const btnAddItm = document.getElementById("add-item-btn");
+  if (btnAddItm) {
+    btnAddItm.onclick = (e) => {
+      e.preventDefault();
+      abrirModalItem(null);
     };
   }
   const modalMastery = document.getElementById("mastery-modal");
@@ -432,6 +514,37 @@ export function montarEstruturaEstatica() {
       estado.modalSplRefs.modal.style.display = "none";
       estado.magiaEmEdicaoId = null;
       renderizarMagias();
+      estado.mudancaPendente = true;
+      window.dispatchEvent(new CustomEvent("save-immediate"));
+    };
+  }
+  if (estado.modalItemRefs.tipo) {
+    estado.modalItemRefs.tipo.addEventListener(
+      "change",
+      gerenciarVisibilidadeCamposItem,
+    );
+  }
+  const closeItm = document.getElementById("item-modal-close");
+  const saveItmBtn = document.getElementById("itm-btn-save");
+  if (closeItm && estado.modalItemRefs.modal) {
+    closeItm.onclick = () => {
+      estado.modalItemRefs.modal.style.display = "none";
+      estado.itemEmEdicaoId = null;
+    };
+  }
+  if (saveItmBtn && estado.modalItemRefs.modal) {
+    saveItmBtn.onclick = () => {
+      const novoItm = lerValoresModalItem();
+      const idx = estado.listaInventario.findIndex((i) => i.id === novoItm.id);
+      if (idx === -1) {
+        estado.listaInventario.push(novoItm);
+      } else {
+        estado.listaInventario[idx] = novoItm;
+      }
+      estado.modalItemRefs.modal.style.display = "none";
+      estado.itemEmEdicaoId = null;
+      renderizarInventario();
+      window.dispatchEvent(new CustomEvent("recalc"));
       estado.mudancaPendente = true;
       window.dispatchEvent(new CustomEvent("save-immediate"));
     };

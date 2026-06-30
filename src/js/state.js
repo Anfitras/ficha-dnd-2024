@@ -15,6 +15,9 @@ export const estado = {
   magiaEmEdicaoId: null,
   modalAtkRefs: {},
   modalSplRefs: {},
+  modalItemRefs: {},
+  itemEmEdicaoId: null,
+  listaInventario: [],
   timerSalvar: null,
   mudancaPendente: false,
 };

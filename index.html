@@ -34,6 +34,7 @@
         <span id="pin-error"></span>
       </div>
     </div>
+
     <div id="mastery-modal">
       <div class="mastery-box">
         <div class="mastery-header">
@@ -49,6 +50,7 @@
         <p id="mastery-desc"></p>
       </div>
     </div>
+
     <div id="attack-modal" class="pin-overlay">
       <div class="attack-box">
         <div class="mastery-header">
@@ -291,28 +293,19 @@
             >
           </div>
 
-          <div id="spl-combat-details-group" class="r20-combat-subfields">
-            <div
-              id="spl-dano-container"
-              class="r20-group"
-              style="display: none"
-            >
+          <div
+            id="spl-combat-details-group"
+            class="r20-combat-subfields hidden-group"
+          >
+            <div id="spl-dano-container" class="r20-group hidden-group">
               <label>DANO (ex: 8d6)</label>
               <input type="text" id="spl-inp-dano-roll" placeholder="Rolagem" />
             </div>
-            <div
-              id="spl-heal-container"
-              class="r20-group"
-              style="display: none"
-            >
+            <div id="spl-heal-container" class="r20-group hidden-group">
               <label>CURA (ex: 1d4+4)</label>
               <input type="text" id="spl-inp-heal-roll" placeholder="Rolagem" />
             </div>
-            <div
-              id="spl-save-attr-container"
-              class="r20-group"
-              style="display: none"
-            >
+            <div id="spl-save-attr-container" class="r20-group hidden-group">
               <label>ATRIBUTO DA SALVAGUARDA</label>
               <select id="spl-inp-save-attr">
                 <option value="destreza">Destreza</option>
@@ -325,7 +318,7 @@
             </div>
           </div>
 
-          <div class="r20-row" style="border-bottom: none">
+          <div class="r20-row no-border">
             <div class="r20-group">
               <label>DESCRIÇÃO</label>
               <textarea
@@ -336,12 +329,85 @@
             </div>
           </div>
         </div>
-        <button
-          type="button"
-          id="spl-btn-save"
-          class="btn-primary-gold"
-          style="margin-top: 1rem"
-        >
+        <button type="button" id="spl-btn-save" class="btn-primary-gold mt-1">
+          CONCLUÍDO
+        </button>
+      </div>
+    </div>
+
+    <div id="item-modal" class="pin-overlay">
+      <div class="attack-box roll20-style-modal">
+        <div class="mastery-header">
+          <h2 id="item-modal-title">NOVO ITEM</h2>
+          <span id="item-modal-close" class="tag-remove" role="button">×</span>
+        </div>
+        <div class="r20-spell-form">
+          <div class="r20-row">
+            <div class="r20-group r20-span-2">
+              <label>NOME</label>
+              <input type="text" id="itm-inp-nome" placeholder="Nome do item" />
+            </div>
+            <div class="r20-group">
+              <label>TIPO</label>
+              <select id="itm-inp-tipo"></select>
+            </div>
+          </div>
+          <div class="r20-row">
+            <div class="r20-group">
+              <label>QUANTIDADE</label>
+              <input type="number" id="itm-inp-qtd" value="1" min="1" />
+            </div>
+            <div class="r20-group">
+              <label>PESO (KG)</label>
+              <input type="number" id="itm-inp-peso" value="0" step="0.1" />
+            </div>
+          </div>
+
+          <div id="itm-armor-group" class="r20-combat-subfields hidden-group">
+            <div class="r20-group">
+              <label>CA BASE</label>
+              <input type="number" id="itm-inp-ca-base" placeholder="ex: 15" />
+            </div>
+            <div class="r20-group">
+              <label>FORÇA MIN</label>
+              <input type="number" id="itm-inp-for-min" placeholder="ex: 13" />
+            </div>
+            <div class="r20-group">
+              <label>MAX DES</label>
+              <input type="number" id="itm-inp-cap" placeholder="ex: 2" />
+            </div>
+            <div class="r20-group checkbox-group-centered">
+              <label class="check-inline"
+                ><input type="checkbox" id="itm-chk-des" /> Soma DES</label
+              >
+            </div>
+            <div class="r20-group checkbox-group-centered">
+              <label class="check-inline"
+                ><input type="checkbox" id="itm-chk-stealth" /> Desv.
+                Furtiv.</label
+              >
+            </div>
+          </div>
+
+          <div id="itm-shield-group" class="r20-combat-subfields hidden-group">
+            <div class="r20-group">
+              <label>BÔNUS CA</label>
+              <input type="number" id="itm-inp-ca-bonus" placeholder="ex: 2" />
+            </div>
+          </div>
+
+          <div class="r20-row no-border">
+            <div class="r20-group">
+              <label>DESCRIÇÃO</label>
+              <textarea
+                id="itm-inp-desc"
+                rows="3"
+                placeholder="Detalhes do item..."
+              ></textarea>
+            </div>
+          </div>
+        </div>
+        <button type="button" id="itm-btn-save" class="btn-primary-gold mt-1">
           CONCLUÍDO
         </button>
       </div>
@@ -485,7 +551,7 @@
                       <th>Dano / Tipo</th>
                       <th>Alcance</th>
                       <th>Maestria</th>
-                      <th style="width: 30px"></th>
+                      <th class="th-action"></th>
                     </tr>
                   </thead>
                   <tbody id="attacks-list"></tbody>
@@ -523,19 +589,63 @@
             <button
               type="button"
               id="add-spell-btn"
-              class="add-action-btn"
-              style="margin-bottom: 1.5rem"
+              class="add-action-btn mb-15"
             >
               + ADICIONAR NOVA MAGIA
             </button>
             <div id="spells-container" class="spells-container"></div>
           </div>
+
           <div id="tab-inventory" class="tab-content">
-            <div class="panel">
-              <div class="panel-header">INVENTÁRIO</div>
-              <p class="placeholder-txt">Painel de equipamentos e moedas.</p>
+            <div class="inv-topbar panel">
+              <div class="coins-grid">
+                <div class="coin-box">
+                  <label>PC</label
+                  ><input type="number" id="coin-pc" value="0" />
+                </div>
+                <div class="coin-box">
+                  <label>PP</label
+                  ><input type="number" id="coin-pp" value="0" />
+                </div>
+                <div class="coin-box">
+                  <label>PE</label
+                  ><input type="number" id="coin-pe" value="0" />
+                </div>
+                <div class="coin-box">
+                  <label>PO</label
+                  ><input type="number" id="coin-po" value="0" />
+                </div>
+                <div class="coin-box pl">
+                  <label>PL</label
+                  ><input type="number" id="coin-pl" value="0" />
+                </div>
+              </div>
+              <div class="weight-tracker">
+                <div class="weight-labels">
+                  <span
+                    >CARGA ATUAL:
+                    <strong id="inv-weight-total">0</strong> kg</span
+                  >
+                  <span>MÁXIMO: <strong id="inv-weight-max">0</strong> kg</span>
+                </div>
+                <div class="hp-bar-track">
+                  <div
+                    id="inv-weight-fill"
+                    class="hp-bar-fill default-bg-green"
+                  ></div>
+                </div>
+              </div>
             </div>
+            <button
+              type="button"
+              id="add-item-btn"
+              class="add-action-btn mb-15"
+            >
+              + ADICIONAR NOVO ITEM
+            </button>
+            <div id="inventory-lists" class="spells-container"></div>
           </div>
+
           <div id="tab-features" class="tab-content">
             <div class="panel">
               <div class="panel-header">TRAÇOS & TALENTOS</div>

@@ -96,6 +96,12 @@ export const popularCampos = (d, protegerFoco) => {
   }
   estado.listaAtaques = normalizarListaAtaques(d.ataques || []);
   estado.listaMagias = d.magias || [];
+  estado.listaInventario = d.inventario || [];
+  setVal("coin-pc", d.moedas?.pc, 0);
+  setVal("coin-pp", d.moedas?.pp, 0);
+  setVal("coin-pe", d.moedas?.pe, 0);
+  setVal("coin-po", d.moedas?.po, 0);
+  setVal("coin-pl", d.moedas?.pl, 0);
   window.dispatchEvent(new CustomEvent("recalc"));
 };
 
@@ -139,6 +145,8 @@ export async function carregarFicha() {
       death_saves: {},
       ataques: [],
       magias: [],
+      inventario: [],
+      moedas: { pc: 0, pp: 0, pe: 0, po: 0, pl: 0 },
       atributos: {
         forca: 10,
         destreza: 10,
@@ -197,6 +205,13 @@ export async function executarSalvar() {
     if (el) deathSavesEstado[id] = el.checked;
   });
   const dadosNovos = {
+    moedas: {
+      pc: toInt(document.getElementById("coin-pc")?.value),
+      pp: toInt(document.getElementById("coin-pp")?.value),
+      pe: toInt(document.getElementById("coin-pe")?.value),
+      po: toInt(document.getElementById("coin-po")?.value),
+      pl: toInt(document.getElementById("coin-pl")?.value),
+    },
     nome: document.getElementById("char-name")?.value || "",
     classe: document.getElementById("char-class")?.value || "",
     subclasse: document.getElementById("char-subclass")?.value || "",
@@ -229,6 +244,7 @@ export async function executarSalvar() {
     death_saves: deathSavesEstado,
     ataques: normalizarListaAtaques(estado.listaAtaques),
     magias: estado.listaMagias,
+    inventario: estado.listaInventario,
     atributos: atributosAtualizados,
     saves: savesEstado,
     skills: { prof: periciasProf },

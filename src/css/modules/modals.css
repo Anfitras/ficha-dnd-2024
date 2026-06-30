@@ -325,7 +325,7 @@
   flex: 2;
 }
 .r20-group label {
-  font-size: 0.6rem;
+  font-size: 0.75rem;
   color: #999;
   text-transform: uppercase;
   font-weight: 700;
@@ -336,7 +336,7 @@
   background: transparent !important;
   border: none !important;
   color: #fff !important;
-  font-size: 0.85rem !important;
+  font-size: 0.9rem !important;
   padding: 2px 0 !important;
   border-bottom: 1px solid transparent !important;
   border-radius: 0 !important;
@@ -352,7 +352,7 @@
   color: #fff !important;
   padding: 0.5rem !important;
   border-radius: 4px !important;
-  font-size: 0.85rem !important;
+  font-size: 0.9rem !important;
   resize: vertical !important;
   min-height: 60px !important;
 }
@@ -375,11 +375,30 @@
   color: var(--text-main) !important;
   font-size: 0.85rem !important;
   cursor: pointer;
+  white-space: nowrap;
+}
+.armor-checkboxes {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 1.5rem;
+  flex: 2 !important;
+  margin-top: 12px;
 }
 .check-inline input[type="checkbox"] {
   width: 18px;
   height: 18px;
 }
+
+.r20-spell-form input[type="checkbox"] {
+  border: 1.5px solid #5e506b !important;
+  background: #110b18 !important;
+}
+.r20-spell-form input[type="checkbox"]:checked {
+  border-color: var(--gold-primary) !important;
+}
+
 .material-input {
   flex: 1;
   min-width: 180px;
@@ -405,13 +424,46 @@
   border-left: 2px solid #ff3b3b;
   padding-left: 1rem;
 }
+
 .r20-combat-subfields {
   display: none;
+  flex-wrap: wrap;
   gap: 1.5rem;
   background: #060408;
   padding: 0.8rem 1rem;
   border-bottom: 1px solid #333;
 }
+.r20-combat-subfields > .r20-group {
+  flex: 1;
+  min-width: 80px;
+}
+
+.checkbox-group-centered {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 12px;
+}
+
+.hidden-group {
+  display: none;
+}
+.mt-1 {
+  margin-top: 1rem;
+}
+.mb-15 {
+  margin-bottom: 1.5rem;
+}
+.no-border {
+  border-bottom: none !important;
+}
+.th-action {
+  width: 30px;
+}
+.default-bg-green {
+  background: #00cc66;
+}
+
 .universal-attrs-panel {
   background: var(--bg-card);
   border: 2px solid var(--border-color);
@@ -552,4 +604,21 @@
   background: #4a0e18;
   border-color: var(--gold-bright);
   box-shadow: 0 0 10px rgba(255, 59, 86, 0.3);
+}
+
+#itm-armor-group {
+  flex-wrap: nowrap;
+  gap: 1rem;
+  align-items: flex-end;
+}
+
+#itm-armor-group > .r20-group {
+  flex: 1;
+  min-width: 0;
+}
+
+#itm-armor-group .checkbox-group-centered {
+  margin-top: 0;
+  justify-content: center;
+  padding-bottom: 6px;
 }
