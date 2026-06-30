@@ -3,9 +3,8 @@ import { iniciarAuth } from "./auth.js";
 import {
   montarEstruturaEstatica,
   registrarOuvintesDeEventos,
-  carregarFicha,
-  sincronizarDadosDoBanco,
 } from "./sheet.js";
+import { carregarFicha, sincronizarDadosDoBanco } from "./sync.js";
 
 const isMesaValida = iniciarAuth();
 

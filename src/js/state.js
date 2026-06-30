@@ -1,0 +1,20 @@
+export const estado = {
+  listaAtaques: [],
+  listaMagias: [],
+  listasDinamicas: {
+    condicoes: [],
+    "def-res": [],
+    "def-imun": [],
+    "def-vuln": [],
+    "prof-armas": [],
+    "prof-armaduras": [],
+    "prof-ferramentas": [],
+    "prof-idiomas": [],
+  },
+  ataqueEmEdicaoIdx: null,
+  magiaEmEdicaoId: null,
+  modalAtkRefs: {},
+  modalSplRefs: {},
+  timerSalvar: null,
+  mudancaPendente: false,
+};

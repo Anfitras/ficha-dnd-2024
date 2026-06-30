@@ -1,0 +1,105 @@
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.dnd-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.dnd-table th {
+  text-align: left;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--border-color);
+  padding: 0.6rem;
+}
+.dnd-table td {
+  padding: 0.5rem 0.4rem;
+}
+.dnd-table input {
+  width: 100%;
+  background: var(--bg-input);
+  border: 1px solid var(--border-color);
+  color: #fff;
+  padding: 0.55rem;
+  border-radius: 4px;
+}
+.shields-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.8rem;
+  margin-bottom: 1.2rem;
+}
+.shield-gold,
+.shield-dark {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 0.8rem 0.2rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.shield-gold {
+  border: 2px solid var(--gold-primary);
+  box-shadow: 0 0 16px rgba(163, 18, 38, 0.4);
+}
+.shield-gold input,
+.shield-dark input {
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 1.5rem;
+  font-weight: 900;
+  text-align: center;
+  width: 100%;
+}
+.shield-big-num {
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: #fff;
+  display: block;
+}
+.shield-gold label,
+.shield-dark label {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin-top: 0.3rem;
+  font-weight: bold;
+}
+.mastery-cell {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.mastery-badge {
+  font-size: 0.82rem;
+  font-weight: bold;
+  color: #fff;
+}
+.read-only-cell {
+  font-size: 0.95rem;
+  color: var(--text-main);
+  font-weight: 600;
+  padding: 0.7rem 0.4rem !important;
+}
+.eye-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  border-radius: 0;
+  padding: 0.15rem 0.25rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  transition: all 0.2s;
+}
+.eye-btn:hover {
+  color: var(--gold-bright);
+  background: transparent;
+}

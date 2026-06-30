@@ -1,0 +1,63 @@
+:root {
+  --bg-page: #0a060e;
+  --bg-card: #150f1d;
+  --bg-input: #060408;
+  --border-color: #2b1b38;
+  --gold-primary: #a31226;
+  --gold-bright: #ff3b56;
+  --text-main: #e6e1db;
+  --text-muted: #7d6f8a;
+}
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family:
+    system-ui,
+    -apple-system,
+    sans-serif;
+}
+body {
+  background-color: var(--bg-page);
+  color: var(--text-main);
+  padding: 1rem;
+  overflow-x: hidden;
+}
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 22px;
+  height: 22px;
+  background: var(--bg-input);
+  border: 1.5px solid var(--border-color);
+  border-radius: 5px;
+  cursor: pointer;
+  display: inline-grid;
+  place-content: center;
+  transition: all 0.2s ease;
+  margin: 0;
+}
+input[type="checkbox"]::before {
+  content: "✓";
+  font-size: 0.9rem;
+  font-weight: 900;
+  color: var(--gold-bright);
+  transform: scale(0);
+  transition: 0.12s transform ease-in-out;
+}
+input[type="checkbox"]:checked {
+  background: #180d22;
+  border-color: var(--gold-primary);
+  box-shadow: 0 0 10px rgba(163, 18, 38, 0.45);
+}
+input[type="checkbox"]:checked::before {
+  transform: scale(1);
+}
