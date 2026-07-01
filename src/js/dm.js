@@ -5,6 +5,7 @@ import { toInt } from "./utils.js";
 let dmDados = { npcs: [] };
 let npcsEmEdicaoId = null;
 let timerSalvarNPC = null;
+let npcsAtivos = [];
 
 const calcularModificador = (valor) => Math.floor((toInt(valor) - 10) / 2);
 
@@ -42,18 +43,17 @@ const renderizarJogadores = async () => {
     container.innerHTML += `
       <div class="player-mini-card">
         <div class="pmc-header">
-          <span class="pmc-name">${d.nome || char.slug}</span>
+          <span class="pmc-name">${d.nome || "Sem Nome"}<span class="pmc-player-name">(${char.slug})</span></span>
           <span class="pmc-hp">${d.hp_atual || 0} / ${d.hp_max || 0} PV</span>
         </div>
         <div class="pmc-stats">
           <div class="pmc-stat-box"><label>CA</label><span>${acTotal}</span></div>
           <div class="pmc-stat-box"><label>NÍVEL</label><span>${d.nivel || 1}</span></div>
-          <div class="pmc-stat-box"><label>INICIATIVA</label><span>${calcularModificador(d.atributos?.destreza) >= 0 ? "+" : ""}${calcularModificador(d.atributos?.destreza)}</span></div>
+          <div class="pmc-stat-box"><label>DESLOCAMENTO</label><span>${d.deslocamento || "9m"}</span></div>
         </div>
         <div class="pmc-passives">
-          <div><label>PERCEPÇÃO</label><span>${passivePerc}</span></div>
-          <div><label>INVESTIGAÇÃO</label><span>${passiveInv}</span></div>
-          <div><label>SABEDORIA</label><span>${d.atributos?.sabedoria || 10}</span></div>
+          <div><label>PERCEPÇÃO PASSIVA</label><span>${passivePerc}</span></div>
+          <div><label>INVESTIGAÇÃO PASSIVA</label><span>${passiveInv}</span></div>
         </div>
       </div>
     `;
@@ -61,15 +61,54 @@ const renderizarJogadores = async () => {
 };
 
 const renderizarNPCs = () => {
-  const container = document.getElementById("npcs-list");
-  if (!container) return;
+  const sidebar = document.getElementById("npc-sidebar-list");
+  const container = document.getElementById("active-npcs-grid");
+  if (!sidebar || !container) return;
+
+  sidebar.innerHTML = "";
   container.innerHTML = "";
-  dmDados.npcs.forEach((npc, idx) => {
+
+  dmDados.npcs.forEach((npc) => {
+    const li = document.createElement("li");
+    li.className = `npc-sidebar-item ${npcsAtivos.includes(npc.id) ? "active" : ""}`;
+    li.innerHTML = `
+      <span>${npc.nome}</span>
+      <span class="tag-remove sidebar-npc-del" role="button">×</span>
+    `;
+
+    li.onclick = (e) => {
+      if (e.target.closest(".sidebar-npc-del")) return;
+      if (npcsAtivos.includes(npc.id)) {
+        npcsAtivos = npcsAtivos.filter((id) => id !== npc.id);
+      } else {
+        if (npcsAtivos.length >= 4) npcsAtivos.shift();
+        npcsAtivos.push(npc.id);
+      }
+      renderizarNPCs();
+    };
+
+    const delBtn = li.querySelector(".sidebar-npc-del");
+    delBtn.onclick = async (e) => {
+      e.stopPropagation();
+      if (window.confirm(`Deseja excluir permanentemente o NPC ${npc.nome}?`)) {
+        dmDados.npcs = dmDados.npcs.filter((n) => n.id !== npc.id);
+        npcsAtivos = npcsAtivos.filter((id) => id !== npc.id);
+        renderizarNPCs();
+        await salvarDM();
+      }
+    };
+
+    sidebar.appendChild(li);
+  });
+
+  npcsAtivos.forEach((id) => {
+    const npc = dmDados.npcs.find((n) => n.id === id);
+    if (!npc) return;
     container.innerHTML += `
       <div class="npc-statblock">
         <div class="npc-controls">
           <button type="button" class="action-icon" data-edit-npc="${npc.id}"><span class="icon-edit"></span></button>
-          <span class="tag-remove" role="button" data-del-npc="${npc.id}">×</span>
+          <span class="tag-remove" role="button" data-close-npc="${npc.id}">×</span>
         </div>
         <div class="npc-sb-header">
           <h2>${npc.nome}</h2>
@@ -106,18 +145,16 @@ const renderizarNPCs = () => {
       </div>
     `;
   });
+
   container.querySelectorAll("[data-edit-npc]").forEach((btn) => {
     btn.onclick = (e) => abrirModalNPC(e.currentTarget.dataset.editNpc);
   });
-  container.querySelectorAll("[data-del-npc]").forEach((btn) => {
-    btn.onclick = async (e) => {
-      if (window.confirm("Excluir este NPC?")) {
-        dmDados.npcs = dmDados.npcs.filter(
-          (n) => n.id !== e.currentTarget.dataset.delNpc,
-        );
-        renderizarNPCs();
-        await salvarDM();
-      }
+
+  container.querySelectorAll("[data-close-npc]").forEach((btn) => {
+    btn.onclick = (e) => {
+      const idParaFechar = e.currentTarget.dataset.closeNpc;
+      npcsAtivos = npcsAtivos.filter((id) => id !== idParaFechar);
+      renderizarNPCs();
     };
   });
 };
@@ -200,7 +237,6 @@ const salvarDM = async () => {
     .from("personagens")
     .upsert([{ slug: "dm", dados: dmDados }], { onConflict: "slug" });
   if (error) {
-    console.error("Erro ao salvar DM:", error);
     if (status) {
       status.style.color = "#ff4444";
       status.textContent = "Erro ao salvar";
@@ -256,6 +292,12 @@ if (iniciarAuth()) {
     clearTimeout(timerSalvarNPC);
     registrarNPCEmEdicao();
     document.getElementById("npc-modal").style.display = "none";
+
+    if (!npcsAtivos.includes(npcsEmEdicaoId) && npcsEmEdicaoId) {
+      if (npcsAtivos.length >= 4) npcsAtivos.shift();
+      npcsAtivos.push(npcsEmEdicaoId);
+    }
+
     renderizarNPCs();
     await salvarDM();
   };

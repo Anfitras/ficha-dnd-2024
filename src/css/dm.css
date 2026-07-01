@@ -63,9 +63,17 @@
   font-weight: 900;
   color: var(--gold-bright);
 }
+.pmc-player-name {
+  font-size: 0.5em;
+  font-weight: normal;
+  color: var(--text-muted);
+  text-transform: none;
+  margin-left: 0.3rem;
+}
 .pmc-passives {
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  text-align: center;
   background: #110b18;
   padding: 0.6rem;
   border-radius: 4px;
@@ -189,4 +197,77 @@
 }
 .npc-modal-box {
   max-width: 800px !important;
+}
+.dm-split-view {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 1.5rem;
+  align-items: start;
+}
+.npc-sidebar {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 1rem;
+  max-height: calc(100vh - 200px);
+  overflow-y: auto;
+}
+#npc-sidebar-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: 0;
+  margin: 0;
+}
+.npc-sidebar-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.8rem;
+  background: var(--bg-input);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--text-main);
+  transition: all 0.2s;
+  user-select: none;
+}
+.sidebar-npc-del {
+  padding: 0 4px;
+  transition: color 0.2s;
+}
+.sidebar-npc-del:hover {
+  color: #ff3b3b;
+}
+.npc-sidebar-item:hover {
+  border-color: var(--gold-primary);
+  color: var(--gold-bright);
+}
+.npc-sidebar-item.active {
+  background: rgba(163, 18, 38, 0.15);
+  border-color: var(--gold-primary);
+  color: var(--gold-bright);
+  box-shadow: 0 0 10px rgba(163, 18, 38, 0.2);
+}
+.npc-active-area {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+  align-items: start;
+}
+@media (max-width: 1024px) {
+  .dm-split-view {
+    grid-template-columns: 1fr;
+  }
+  .npc-sidebar {
+    max-height: 250px;
+  }
+}
+@media (max-width: 768px) {
+  .npc-active-area {
+    grid-template-columns: 1fr;
+  }
 }
