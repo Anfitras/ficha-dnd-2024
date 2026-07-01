@@ -45,6 +45,9 @@
   flex-direction: column;
   gap: 0.8rem;
 }
+.player-card-dm {
+  grid-column: 1 / -1;
+}
 .player-card:hover {
   border-color: var(--gold-primary);
   transform: translateY(-4px);

@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Escudo do Mestre - D&D 5.5e</title>
+    <link rel="stylesheet" href="./src/css/style.css" />
+    <link rel="stylesheet" href="./src/css/dm.css" />
+    <link
+      rel="shortcut icon"
+      href="assets/dadoFavicon.ico"
+      type="image/x-icon"
+    />
+  </head>
+  <body>
+    <div id="pin-modal" class="pin-overlay">
+      <div class="pin-box">
+        <span class="pin-icon">🔒</span>
+        <h2 id="pin-target-name">ESCUDO DO MESTRE SELADO</h2>
+        <input
+          type="password"
+          id="pin-input"
+          maxlength="4"
+          placeholder="••••"
+        />
+        <button id="pin-submit">DESTRAVAR</button>
+        <span id="pin-error"></span>
+      </div>
+    </div>
+
+    <div id="app" class="dm-wrapper">
+      <header class="sheet-topbar">
+        <div class="hero-name-container">
+          <h1 id="char-name">ESCUDO DO MESTRE</h1>
+        </div>
+      </header>
+
+      <div class="dm-dashboard">
+        <section class="dm-section">
+          <div class="panel-header">VISÃO GERAL DO GRUPO</div>
+          <div id="players-overview" class="players-overview-grid"></div>
+        </section>
+
+        <section class="dm-section">
+          <div
+            class="panel-header"
+            style="
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+            "
+          >
+            BESTIÁRIO E NPCS
+            <button
+              id="add-npc-btn"
+              class="add-action-btn"
+              style="width: auto; margin: 0; padding: 0.4rem 1rem"
+            >
+              + CRIAR NPC
+            </button>
+          </div>
+          <div id="npcs-list" class="npcs-grid"></div>
+        </section>
+      </div>
+
+      <footer class="sheet-footer">
+        <span id="status-msg"></span>
+      </footer>
+    </div>
+
+    <div id="npc-modal" class="pin-overlay">
+      <div class="attack-box roll20-style-modal npc-modal-box">
+        <div class="mastery-header">
+          <h2 id="npc-modal-title">CRIAR NOVO NPC</h2>
+          <span id="npc-modal-close" class="tag-remove" role="button">×</span>
+        </div>
+        <div class="r20-spell-form">
+          <div class="r20-row">
+            <div class="r20-group r20-span-2">
+              <label>NOME DO NPC</label>
+              <input type="text" id="npc-inp-nome" />
+            </div>
+            <div class="r20-group">
+              <label>TAMANHO/TIPO/TENDÊNCIA</label>
+              <input
+                type="text"
+                id="npc-inp-tipo"
+                placeholder="ex: Humanoide Médio, Caótico e Mau"
+              />
+            </div>
+          </div>
+          <div class="r20-row">
+            <div class="r20-group">
+              <label>CLASSE DE ARMADURA (CA)</label>
+              <input
+                type="text"
+                id="npc-inp-ca"
+                placeholder="ex: 15 (Armadura de Couro)"
+              />
+            </div>
+            <div class="r20-group">
+              <label>PONTOS DE VIDA (PV)</label>
+              <input
+                type="text"
+                id="npc-inp-hp"
+                placeholder="ex: 78 (12d8 + 24)"
+              />
+            </div>
+            <div class="r20-group">
+              <label>DESLOCAMENTO</label>
+              <input type="text" id="npc-inp-desl" placeholder="ex: 9m" />
+            </div>
+          </div>
+          <div class="r20-row">
+            <div class="r20-group">
+              <label>FOR</label
+              ><input type="number" id="npc-inp-for" value="10" />
+            </div>
+            <div class="r20-group">
+              <label>DES</label
+              ><input type="number" id="npc-inp-des" value="10" />
+            </div>
+            <div class="r20-group">
+              <label>CON</label
+              ><input type="number" id="npc-inp-con" value="10" />
+            </div>
+            <div class="r20-group">
+              <label>INT</label
+              ><input type="number" id="npc-inp-int" value="10" />
+            </div>
+            <div class="r20-group">
+              <label>SAB</label
+              ><input type="number" id="npc-inp-sab" value="10" />
+            </div>
+            <div class="r20-group">
+              <label>CAR</label
+              ><input type="number" id="npc-inp-car" value="10" />
+            </div>
+          </div>
+          <div class="r20-row">
+            <div class="r20-group">
+              <label>PERÍCIAS</label>
+              <input
+                type="text"
+                id="npc-inp-pericias"
+                placeholder="ex: Furtividade +5, Percepção +3"
+              />
+            </div>
+            <div class="r20-group">
+              <label>RESISTÊNCIAS / IMUNIDADES</label>
+              <input
+                type="text"
+                id="npc-inp-res"
+                placeholder="ex: Veneno, Fogo"
+              />
+            </div>
+          </div>
+          <div class="r20-row">
+            <div class="r20-group">
+              <label>SENTIDOS</label>
+              <input
+                type="text"
+                id="npc-inp-sentidos"
+                placeholder="ex: Percepção Passiva 13"
+              />
+            </div>
+            <div class="r20-group">
+              <label>IDIOMAS</label>
+              <input
+                type="text"
+                id="npc-inp-idiomas"
+                placeholder="ex: Comum, Élfico"
+              />
+            </div>
+            <div class="r20-group">
+              <label>NÍVEL DE DESAFIO (ND)</label>
+              <input
+                type="text"
+                id="npc-inp-nd"
+                placeholder="ex: 8 (3.900 XP)"
+              />
+            </div>
+          </div>
+          <div class="r20-row no-border">
+            <div class="r20-group">
+              <label>TRAÇOS (Formato Markdown/HTML leve)</label>
+              <textarea
+                id="npc-inp-tracos"
+                rows="4"
+                placeholder="<b>Ataque Furtivo.</b> Causa 14 (4d6) de dano extra..."
+              ></textarea>
+            </div>
+          </div>
+          <div class="r20-row no-border">
+            <div class="r20-group">
+              <label>AÇÕES</label>
+              <textarea
+                id="npc-inp-acoes"
+                rows="4"
+                placeholder="<b>Espada Curta.</b> Ataque Corpo a Corpo: +6 para atingir..."
+              ></textarea>
+            </div>
+          </div>
+        </div>
+        <button type="button" id="npc-btn-save" class="btn-primary-gold mt-1">
+          SALVAR NPC
+        </button>
+      </div>
+    </div>
+
+    <script type="module" src="/src/js/dm.js"></script>
+  </body>
+</html>
