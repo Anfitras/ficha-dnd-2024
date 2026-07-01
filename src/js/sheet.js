@@ -1,4 +1,5 @@
 import { estado } from "./state.js";
+import { rolarDado } from "./roller.js";
 import {
   atributosLista,
   periciasLista,
@@ -630,6 +631,36 @@ export function registrarOuvintesDeEventos() {
       dispararSalvoImediato();
     }
   });
+
+  document.addEventListener("click", (e) => {
+    if (e.target.closest(".skill-name")) {
+      const row = e.target.closest(".skill-row");
+      const name = e.target.textContent;
+      const modEl = row.querySelector(".skill-total");
+      if (modEl) rolarDado(`Teste de ${name}`, modEl.textContent);
+    }
+
+    const modBox = e.target.closest(".u-mod-box");
+    if (modBox) {
+      const attrId = modBox.querySelector("span").id.replace("mod-", "");
+      const name = atributosLista.find((a) => a.id === attrId)?.nome;
+      rolarDado(`Teste de ${name}`, modBox.textContent);
+    }
+
+    const saveBox = e.target.closest(".u-save-box");
+    if (saveBox && !e.target.closest(".skill-dot")) {
+      const attrId = saveBox.id.replace("save-box-", "");
+      const name = atributosLista.find((a) => a.id === attrId)?.nome;
+      const mod = saveBox.querySelector("span[id^='save-val']").textContent;
+      rolarDado(`Salvaguarda: ${name}`, mod);
+    }
+
+    if (e.target.closest("#roll-close")) {
+      const modal = document.getElementById("roll-modal");
+      if (modal) modal.style.display = "none";
+    }
+  });
+
   window.addEventListener("recalc", () => recalcularTudo());
   window.addEventListener("render-tag", (e) => {
     if (e.detail?.chave) renderizarTags(e.detail.chave);

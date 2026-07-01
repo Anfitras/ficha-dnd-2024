@@ -579,3 +579,26 @@
   transform: translateX(14px);
   background-color: #fff;
 }
+.skill-name {
+  cursor: pointer;
+  transition: color 0.15s;
+}
+.skill-name:hover {
+  color: var(--gold-bright);
+}
+.u-mod-box {
+  cursor: pointer;
+  transition:
+    border-color 0.15s,
+    color 0.15s;
+}
+.u-mod-box:hover {
+  border-color: var(--gold-bright);
+  color: var(--gold-bright);
+}
+.u-save-box {
+  cursor: pointer;
+}
+.u-save-box:hover {
+  border-color: var(--gold-bright);
+}
