@@ -5,6 +5,7 @@ import {
   condicoesDescricoes,
   maestriasDescricoes,
   damageTypesLista,
+  origensHabilidadeLista,
 } from "./constants.js";
 import { toInt, formatMod, getProfBonus } from "./utils.js";
 import {
@@ -28,6 +29,11 @@ import {
   lerValoresModalItem,
   gerenciarVisibilidadeCamposItem,
 } from "./inventory.js";
+import {
+  renderizarHabilidades,
+  abrirModalHabilidade,
+  lerValoresModalHabilidade,
+} from "./features.js";
 import {
   carregarFicha,
   dispararSalvoImediato,
@@ -213,6 +219,7 @@ export const recalcularTudo = () => {
   renderizarAtaques();
   renderizarMagias();
   renderizarInventario();
+  renderizarHabilidades();
   atualizarPreviewAtaque();
 };
 
@@ -373,6 +380,14 @@ export function montarEstruturaEstatica() {
     saveAttr: document.getElementById("spl-inp-save-attr"),
     desc: document.getElementById("spl-inp-desc"),
   };
+  estado.modalFeatRefs = {
+    modal: document.getElementById("feature-modal"),
+    titulo: document.getElementById("feature-modal-title"),
+    nome: document.getElementById("fea-inp-nome"),
+    acao: document.getElementById("fea-inp-acao"),
+    origem: document.getElementById("fea-inp-origem"),
+    desc: document.getElementById("fea-inp-desc"),
+  };
   if (estado.modalAtkRefs.danoTipo) {
     estado.modalAtkRefs.danoTipo.innerHTML =
       `<option value="">—</option>` +
@@ -419,6 +434,13 @@ export function montarEstruturaEstatica() {
     btnAddItm.onclick = (e) => {
       e.preventDefault();
       abrirModalItem(null);
+    };
+  }
+  const btnAddFea = document.getElementById("add-feature-btn");
+  if (btnAddFea) {
+    btnAddFea.onclick = (e) => {
+      e.preventDefault();
+      abrirModalHabilidade(null);
     };
   }
   const modalMastery = document.getElementById("mastery-modal");
@@ -545,6 +567,32 @@ export function montarEstruturaEstatica() {
       estado.itemEmEdicaoId = null;
       renderizarInventario();
       window.dispatchEvent(new CustomEvent("recalc"));
+      estado.mudancaPendente = true;
+      window.dispatchEvent(new CustomEvent("save-immediate"));
+    };
+  }
+  const closeFea = document.getElementById("feature-modal-close");
+  const saveFeaBtn = document.getElementById("fea-btn-save");
+  if (closeFea && estado.modalFeatRefs.modal) {
+    closeFea.onclick = () => {
+      estado.modalFeatRefs.modal.style.display = "none";
+      estado.habilidadeEmEdicaoId = null;
+    };
+  }
+  if (saveFeaBtn && estado.modalFeatRefs.modal) {
+    saveFeaBtn.onclick = () => {
+      const novaFeat = lerValoresModalHabilidade();
+      const idx = estado.listaHabilidades.findIndex(
+        (h) => h.id === novaFeat.id,
+      );
+      if (idx === -1) {
+        estado.listaHabilidades.push(novaFeat);
+      } else {
+        estado.listaHabilidades[idx] = novaFeat;
+      }
+      estado.modalFeatRefs.modal.style.display = "none";
+      estado.habilidadeEmEdicaoId = null;
+      renderizarHabilidades();
       estado.mudancaPendente = true;
       window.dispatchEvent(new CustomEvent("save-immediate"));
     };

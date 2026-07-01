@@ -142,3 +142,9 @@ export const tiposItemLista = [
   "Ferramenta",
   "Equipamento de Aventura",
 ];
+
+export const origensHabilidadeLista = [
+  "Talento",
+  "Habilidade de Classe",
+  "Traço de Espécie",
+];

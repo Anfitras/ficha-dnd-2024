@@ -1,6 +1,7 @@
 export const estado = {
   listaAtaques: [],
   listaMagias: [],
+  listaHabilidades: [],
   listasDinamicas: {
     condicoes: [],
     "def-res": [],
@@ -13,9 +14,11 @@ export const estado = {
   },
   ataqueEmEdicaoIdx: null,
   magiaEmEdicaoId: null,
+  habilidadeEmEdicaoId: null,
   modalAtkRefs: {},
   modalSplRefs: {},
   modalItemRefs: {},
+  modalFeatRefs: {},
   itemEmEdicaoId: null,
   listaInventario: [],
   timerSalvar: null,

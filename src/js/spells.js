@@ -213,7 +213,7 @@ export function renderizarMagias() {
           ${badges.join(" ")}
         </div>
         <div class="spell-actions-side">
-          <button type="button" class="action-icon" data-edit-spell="${mg.id}">✏️</button>
+          <button type="button" class="action-icon" data-edit-spell="${mg.id}"><span class="icon-edit"></span></button>
           <span class="tag-remove" role="button" data-del-spell="${mg.id}">×</span>
           <button type="button" class="spell-drawer-toggle" aria-expanded="false" aria-controls="${uid}">▼</button>
         </div>

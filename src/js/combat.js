@@ -199,7 +199,7 @@ export const renderizarAtaques = () => {
         </div>
       </td>
       <td style="text-align:center; white-space:nowrap;">
-        <button type="button" class="action-icon" data-edit-atk="${idx}">✏️</button>
+        <button type="button" class="action-icon" data-edit-atk="${idx}"><span class="icon-edit"></span></button>
         <span class="tag-remove" role="button" data-del-atk="${idx}">×</span>
       </td>
     `;

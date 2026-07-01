@@ -343,7 +343,7 @@
         </div>
         <div class="r20-spell-form">
           <div class="r20-row">
-            <div class="r20-group r20-span-2">
+            <div class="r20-group">
               <label>NOME</label>
               <input type="text" id="itm-inp-nome" placeholder="Nome do item" />
             </div>
@@ -408,6 +408,58 @@
           </div>
         </div>
         <button type="button" id="itm-btn-save" class="btn-primary-gold mt-1">
+          CONCLUÍDO
+        </button>
+      </div>
+    </div>
+
+    <div id="feature-modal" class="pin-overlay">
+      <div class="attack-box roll20-style-modal">
+        <div class="mastery-header">
+          <h2 id="feature-modal-title">NOVA HABILIDADE / TRAÇO</h2>
+          <span id="feature-modal-close" class="tag-remove" role="button"
+            >×</span
+          >
+        </div>
+        <div class="r20-spell-form">
+          <div class="r20-row">
+            <div class="r20-group r20-span-2">
+              <label>NOME</label>
+              <input
+                type="text"
+                id="fea-inp-nome"
+                placeholder="Nome da habilidade"
+              />
+            </div>
+            <div class="r20-group">
+              <label>AÇÃO</label>
+              <select id="fea-inp-acao">
+                <option value="Nenhuma">Nenhuma</option>
+                <option value="Ação">Ação</option>
+                <option value="Ação Bônus">Ação Bônus</option>
+                <option value="Reação">Reação</option>
+                <option value="Ação Livre">Ação Livre</option>
+              </select>
+            </div>
+          </div>
+          <div class="r20-row">
+            <div class="r20-group">
+              <label>ORIGEM</label>
+              <select id="fea-inp-origem"></select>
+            </div>
+          </div>
+          <div class="r20-row no-border">
+            <div class="r20-group">
+              <label>DESCRIÇÃO</label>
+              <textarea
+                id="fea-inp-desc"
+                rows="5"
+                placeholder="Detalhes da habilidade..."
+              ></textarea>
+            </div>
+          </div>
+        </div>
+        <button type="button" id="fea-btn-save" class="btn-primary-gold mt-1">
           CONCLUÍDO
         </button>
       </div>
@@ -534,7 +586,9 @@
             <button class="tab-btn" data-target="tab-inventory">
               INVENTÁRIO
             </button>
-            <button class="tab-btn" data-target="tab-features">TRAÇOS</button>
+            <button class="tab-btn" data-target="tab-features">
+              HABILIDADES
+            </button>
             <button class="tab-btn" data-target="tab-notes">NOTAS</button>
             <button class="tab-btn" data-target="tab-about">SOBRE</button>
           </nav>
@@ -647,10 +701,14 @@
           </div>
 
           <div id="tab-features" class="tab-content">
-            <div class="panel">
-              <div class="panel-header">TRAÇOS & TALENTOS</div>
-              <p class="placeholder-txt">Painel de habilidades de classe.</p>
-            </div>
+            <button
+              type="button"
+              id="add-feature-btn"
+              class="add-action-btn mb-15"
+            >
+              + ADICIONAR TRAÇO / HABILIDADE
+            </button>
+            <div id="features-lists" class="spells-container"></div>
           </div>
           <div id="tab-notes" class="tab-content">
             <div class="panel">

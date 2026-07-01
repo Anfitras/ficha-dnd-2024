@@ -97,6 +97,7 @@ export const popularCampos = (d, protegerFoco) => {
   estado.listaAtaques = normalizarListaAtaques(d.ataques || []);
   estado.listaMagias = d.magias || [];
   estado.listaInventario = d.inventario || [];
+  estado.listaHabilidades = d.habilidades || [];
   setVal("coin-pc", d.moedas?.pc, 0);
   setVal("coin-pp", d.moedas?.pp, 0);
   setVal("coin-pe", d.moedas?.pe, 0);
@@ -146,6 +147,7 @@ export async function carregarFicha() {
       ataques: [],
       magias: [],
       inventario: [],
+      habilidades: [],
       moedas: { pc: 0, pp: 0, pe: 0, po: 0, pl: 0 },
       atributos: {
         forca: 10,
@@ -245,6 +247,7 @@ export async function executarSalvar() {
     ataques: normalizarListaAtaques(estado.listaAtaques),
     magias: estado.listaMagias,
     inventario: estado.listaInventario,
+    habilidades: estado.listaHabilidades,
     atributos: atributosAtualizados,
     saves: savesEstado,
     skills: { prof: periciasProf },

@@ -312,14 +312,14 @@
   flex-wrap: nowrap;
   align-items: flex-end;
   gap: 1.5rem;
-  border-bottom: 1px solid #333;
-  padding: 0.6rem 0;
+  margin-bottom: 1rem;
 }
 .r20-group {
   display: flex;
   flex-direction: column;
   flex: 1;
   min-width: 0;
+  gap: 0.3rem;
 }
 .r20-group.r20-span-2 {
   flex: 2;
@@ -332,27 +332,22 @@
   margin-bottom: 4px;
 }
 .r20-group input,
-.r20-group select {
-  background: transparent !important;
-  border: none !important;
+.r20-group select,
+.r20-group textarea {
+  width: 100%;
+  background: var(--bg-input) !important;
+  border: 1px solid var(--border-color) !important;
   color: #fff !important;
+  padding: 0.65rem !important;
+  border-radius: 6px !important;
   font-size: 0.9rem !important;
-  padding: 2px 0 !important;
-  border-bottom: 1px solid transparent !important;
-  border-radius: 0 !important;
-  transition: border-bottom 0.2s;
+  transition: border-color 0.2s;
 }
 .r20-group select option {
-  background-color: #000000 !important;
+  background-color: var(--bg-card) !important;
   color: #ffffff !important;
 }
 .r20-group textarea {
-  background: #111 !important;
-  border: 1px solid #333 !important;
-  color: #fff !important;
-  padding: 0.5rem !important;
-  border-radius: 4px !important;
-  font-size: 0.9rem !important;
   resize: vertical !important;
   min-height: 60px !important;
 }
@@ -360,7 +355,7 @@
 .r20-group select:focus,
 .r20-group textarea:focus {
   outline: none !important;
-  border-color: var(--gold-bright) !important;
+  border-color: var(--gold-primary) !important;
 }
 .r20-checks-row {
   justify-content: flex-start;
@@ -390,7 +385,6 @@
   width: 18px;
   height: 18px;
 }
-
 .r20-spell-form input[type="checkbox"] {
   border: 1.5px solid #5e506b !important;
   background: #110b18 !important;
@@ -398,23 +392,22 @@
 .r20-spell-form input[type="checkbox"]:checked {
   border-color: var(--gold-primary) !important;
 }
-
 .material-input {
   flex: 1;
   min-width: 180px;
-  background: transparent !important;
-  border: none !important;
-  border-bottom: 1px solid transparent !important;
+  background: var(--bg-input) !important;
+  border: 1px solid var(--border-color) !important;
   color: #fff !important;
-  font-size: 0.85rem !important;
-  padding: 2px 0 !important;
+  padding: 0.65rem !important;
+  border-radius: 6px !important;
+  font-size: 0.9rem !important;
   display: none;
 }
 .material-input.visible {
   display: block;
 }
 .material-input:focus {
-  border-color: var(--gold-bright) !important;
+  border-color: var(--gold-primary) !important;
   outline: none;
 }
 .r20-spacer {
@@ -424,27 +417,23 @@
   border-left: 2px solid #ff3b3b;
   padding-left: 1rem;
 }
-
 .r20-combat-subfields {
   display: none;
   flex-wrap: wrap;
   gap: 1.5rem;
-  background: #060408;
-  padding: 0.8rem 1rem;
-  border-bottom: 1px solid #333;
+  background: transparent;
+  margin-bottom: 1rem;
 }
 .r20-combat-subfields > .r20-group {
   flex: 1;
   min-width: 80px;
 }
-
 .checkbox-group-centered {
   display: flex;
   align-items: center;
   justify-content: center;
   margin-top: 12px;
 }
-
 .hidden-group {
   display: none;
 }
@@ -463,7 +452,6 @@
 .default-bg-green {
   background: #00cc66;
 }
-
 .universal-attrs-panel {
   background: var(--bg-card);
   border: 2px solid var(--border-color);
@@ -605,18 +593,15 @@
   border-color: var(--gold-bright);
   box-shadow: 0 0 10px rgba(255, 59, 86, 0.3);
 }
-
 #itm-armor-group {
   flex-wrap: nowrap;
   gap: 1rem;
   align-items: flex-end;
 }
-
 #itm-armor-group > .r20-group {
   flex: 1;
   min-width: 0;
 }
-
 #itm-armor-group .checkbox-group-centered {
   margin-top: 0;
   justify-content: center;

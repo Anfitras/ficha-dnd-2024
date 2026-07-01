@@ -450,15 +450,31 @@
   border-color: var(--gold-primary);
 }
 .action-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   background: transparent;
   border: none;
   cursor: pointer;
-  font-size: 0.95rem;
   padding: 0 6px;
   transition: transform 0.15s;
 }
 .action-icon:hover {
   transform: scale(1.25);
+}
+.icon-edit {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  background-color: var(--text-muted);
+  -webkit-mask: url("/assets/botao-editar.svg") no-repeat center;
+  mask: url("/assets/botao-editar.svg") no-repeat center;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  transition: background-color 0.15s ease;
+}
+.action-icon:hover .icon-edit {
+  background-color: var(--gold-bright);
 }
 .inv-topbar {
   display: grid;
