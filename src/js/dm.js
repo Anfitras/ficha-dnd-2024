@@ -43,7 +43,10 @@ const renderizarJogadores = async () => {
     container.innerHTML += `
       <div class="player-mini-card">
         <div class="pmc-header">
-          <span class="pmc-name">${d.nome || "Sem Nome"}<span class="pmc-player-name">(${char.slug})</span></span>
+          <span class="pmc-name">
+            <a href="/?char=${char.slug}" target="_blank" class="pmc-name-link">${d.nome || "Sem Nome"}</a>
+            <span class="pmc-player-name">(${char.slug})</span>
+          </span>
           <span class="pmc-hp">${d.hp_atual || 0} / ${d.hp_max || 0} PV</span>
         </div>
         <div class="pmc-stats">

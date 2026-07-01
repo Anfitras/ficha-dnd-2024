@@ -271,3 +271,11 @@
     grid-template-columns: 1fr;
   }
 }
+.pmc-name-link {
+  color: var(--text-main);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+.pmc-name-link:hover {
+  color: var(--gold-bright);
+}
